@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Championship Beta — Deeeep.io Analytics</title>
+<meta name="description" content="The Deeeep.io Championship: 12 Monthly events, 5 regions, Championship Points, and a 16-player World Championship final. Launching next season.">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Deeeep.io Analytics">
+<meta property="og:title" content="Championship Beta — Deeeep.io Analytics">
+<meta property="og:description" content="The Deeeep.io Championship: 12 Monthly events, 5 regions, Championship Points, and a 16-player World Championship final. Launching next season.">
+<meta property="og:image" content="https://deeeep-analytics.netlify.app/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Championship Beta — Deeeep.io Analytics">
+<meta name="twitter:description" content="The Deeeep.io Championship: 12 Monthly events, 5 regions, Championship Points, and a 16-player World Championship final. Launching next season.">
+<meta name="twitter:image" content="https://deeeep-analytics.netlify.app/og-image.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="brand"><span class="glow-dot"></span> DEEEEP.IO ANALYTICS</div>
+  <nav class="top-nav">
+    <a href="index.html" data-page="home">Tournaments</a>
+    <a href="leaderboard.html" data-page="leaderboard">Elo Leaderboard</a>
+    <a href="stats.html" data-page="stats">Stats</a>
+    <a href="compare.html" data-page="compare">Compare</a>
+    <a href="records.html" data-page="records">Records</a>
+    <a href="live-map.html" data-page="live-map">Live Map</a>
+    <a href="card-game.html" data-page="card-game">Card Game</a>
+    <a href="championship.html" data-page="championship">Championship <span class="beta-pill">BETA</span></a>
+    <a href="about.html" data-page="about">About</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero" style="padding-top:48px;">
+    <div class="eyebrow">Coming next season</div>
+    <h1>The Deeeep.io Championship.</h1>
+    <p class="lead">A brand new, year-round format running alongside the existing Elo — independent from past tournaments, with its own season points and its own path to a 16-player World Championship. This page is a live beta: the rules below are final, the season hasn't started yet.</p>
+  </section>
+
+  <div class="about-block">
+    <h3>How a season works</h3>
+    <ul>
+      <li><b>1 season = 1 calendar year</b>, made of <b>12 Monthly Championships</b> — one per month.</li>
+      <li>Completely separate from the archived 2023/2024/2026 tournaments. Elo keeps existing on its own, untouched by this system.</li>
+      <li><b>Championship Points</b> are season-specific and reset to zero every year.</li>
+      <li>5 regions: <b>EU · NA · AS · OCE · SA</b>. Each player picks one region for the whole season.</li>
+    </ul>
+  </div>
+
+  <div class="about-block">
+    <h3>Every month</h3>
+    <ul>
+      <li>Registration opens, open to anyone — no fixed player count. 14, 34, or 267 sign-ups all work the same way.</li>
+      <li>Once registration closes, the site randomly pairs every player with <b>4 different opponents</b>, known from day one.</li>
+      <li>Maximum <b>1 match per week</b>, so the 4 matches spread across the month.</li>
+    </ul>
+  </div>
+
+  <div class="about-block">
+    <h3>Championship Points</h3>
+    <div class="table-wrap" style="max-width:420px; margin-bottom:12px;">
+      <table class="classement">
+        <thead><tr><th>Monthly record</th><th>Points</th></tr></thead>
+        <tbody>
+          <tr><td>4–0</td><td class="elo-val">100</td></tr>
+          <tr><td>3–1</td><td class="elo-val">70</td></tr>
+          <tr><td>2–2</td><td class="elo-val">40</td></tr>
+          <tr><td>1–3</td><td class="elo-val">20</td></tr>
+          <tr><td>0–4</td><td class="elo-val">10</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>A month not played earns 0 points. Ties within a Monthly don't matter — several players can land on the same record and points. What matters is the <b>cumulative annual total</b> per region.</p>
+  </div>
+
+  <div class="about-block">
+    <h3>World Championship qualification</h3>
+    <p>16 players qualify for the season-ending World Championship, purely by cumulative Championship Points:</p>
+    <ul>
+      <li><b>Top 6</b> — EU</li>
+      <li><b>Top 4</b> — NA</li>
+      <li><b>Top 2</b> — AS</li>
+      <li><b>Top 2</b> — OCE</li>
+      <li><b>Top 2</b> — SA</li>
+    </ul>
+    <p>The exact finals format is still being finalized. A cash prize is under discussion, most likely concentrated on the World Championship rather than spread thin across regions every month.</p>
+  </div>
+
+  <div class="about-block">
+    <h3>⚠️ About this beta tool</h3>
+    <p>Everything below (registrations, matchmaking, results, standings) runs entirely in your browser via local storage — there's no account system and no shared server, consistent with the rest of this site. It's built as a working commissioner tool for testing the format before the season goes live. Data stays on this device only.</p>
+  </div>
+
+  <section>
+    <div class="section-head"><h2>Season setup</h2></div>
+    <div class="champ-controls">
+      <label>Season year <input type="number" id="cc-year" value="2027" class="sim-input" style="width:100px;"></label>
+      <label>Region
+        <select id="cc-region" class="sim-input">
+          <option value="EU">EU</option>
+          <option value="NA">NA</option>
+          <option value="AS">AS</option>
+          <option value="OCE">OCE</option>
+          <option value="SA">SA</option>
+        </select>
+      </label>
+      <label>Month
+        <select id="cc-month" class="sim-input"></select>
+      </label>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>1. Registrations</h2></div>
+    <p class="muted" style="font-size:13px; margin-bottom:10px;">One pseudo per line. Saved per region + month.</p>
+    <textarea id="cc-registrations" class="cc-textarea" rows="6" placeholder="PlayerOne&#10;PlayerTwo&#10;PlayerThree..."></textarea>
+    <div style="margin-top:10px;">
+      <button class="btn-primary" id="cc-save-reg">Save registrations</button>
+      <span class="muted" id="cc-reg-count" style="margin-left:12px; font-size:13px;"></span>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>2. Matchmaking</h2></div>
+    <button class="btn-primary" id="cc-generate">Generate matchmaking</button>
+    <div id="cc-matchmaking" style="margin-top:20px;"></div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>3. Results</h2></div>
+    <div id="cc-results-form"></div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>Season standings</h2></div>
+    <div class="champ-controls">
+      <label>Region
+        <select id="standings-region" class="sim-input">
+          <option value="EU">EU</option>
+          <option value="NA">NA</option>
+          <option value="AS">AS</option>
+          <option value="OCE">OCE</option>
+          <option value="SA">SA</option>
+        </select>
+      </label>
+    </div>
+    <div class="table-wrap" style="margin-bottom:40px;">
+      <table class="classement">
+        <thead><tr><th>#</th><th>Player</th><th>Months played</th><th>Points</th></tr></thead>
+        <tbody id="standings-rows"></tbody>
+      </table>
+    </div>
+    <p class="muted" style="font-size:12px;">Rows above the line qualify for the World Championship at season's end.</p>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>World Championship qualifiers (live preview)</h2></div>
+    <div class="table-wrap" style="margin-bottom:40px;">
+      <table class="classement">
+        <thead><tr><th>Region</th><th>Player</th><th>Points</th></tr></thead>
+        <tbody id="qualifiers-rows"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<footer>Beta system — rules final, season not yet live &nbsp;·&nbsp; Run by the Deeeep.io Europe Staff (owned by LordState) &nbsp;·&nbsp; <a href="https://discord.gg/UAFnRKsabe" target="_blank" rel="noopener" style="color:var(--bio-teal);">Join our Discord</a></footer>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script src="championship.js"></script>
+<script>
+initBioField(document.body);
+initGlobalSearch();
+renderNav('championship');
+initChampionship();
+</script>
+
+</body>
+</html>

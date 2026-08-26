@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elo Leaderboard — Deeeep.io Analytics</title>
+<meta name="description" content="The full Deeeep.io 1v1 Elo leaderboard, ranked across all three tournament editions.">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Deeeep.io Analytics">
+<meta property="og:title" content="Elo Leaderboard — Deeeep.io Analytics">
+<meta property="og:description" content="The full Deeeep.io 1v1 Elo leaderboard, ranked across all three tournament editions.">
+<meta property="og:image" content="https://deeeep-analytics.netlify.app/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Elo Leaderboard — Deeeep.io Analytics">
+<meta name="twitter:description" content="The full Deeeep.io 1v1 Elo leaderboard, ranked across all three tournament editions.">
+<meta name="twitter:image" content="https://deeeep-analytics.netlify.app/og-image.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="brand"><span class="glow-dot"></span> DEEEEP.IO ANALYTICS</div>
+  <nav class="top-nav">
+    <a href="index.html" data-page="home">Tournaments</a>
+    <a href="leaderboard.html" data-page="leaderboard">Elo Leaderboard</a>
+    <a href="stats.html" data-page="stats">Stats &amp; Records</a>
+    <a href="compare.html" data-page="compare">Compare</a>
+    <a href="live-map.html" data-page="live-map">Live Map</a>
+    <a href="card-game.html" data-page="card-game">Card Game</a>
+    <a href="championship.html" data-page="championship">Championship <span class="beta-pill">BETA</span></a>
+    <a href="about.html" data-page="about">About</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero" style="padding-top:48px;">
+    <div class="eyebrow">Overall ranking</div>
+    <h1>The Elo leaderboard, across all editions.</h1>
+    <p class="lead">Every win gains Elo, every loss costs Elo — the size of the swing depends on the skill gap between the two players. No draws are possible.</p>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>Players</h2>
+      <span class="count" id="p-count"></span>
+    </div>
+    <div class="search-bar" style="display:flex; gap:12px; flex-wrap:wrap;">
+      <input type="text" id="search" placeholder="Search a player…" style="max-width:300px;">
+      <select id="country-filter" class="sim-input" style="max-width:220px; text-align:left;">
+        <option value="">All countries</option>
+      </select>
+    </div>
+    <div class="table-wrap">
+      <table class="classement">
+        <thead>
+          <tr>
+            <th data-sort="rank">#</th>
+            <th data-sort="pseudo">Player</th>
+            <th data-sort="currentElo">Elo ▾</th>
+            <th data-sort="winrate">Win rate</th>
+            <th data-sort="tournamentsPlayed">Tournaments</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<footer>Starting Elo: 800 · K-factor: 32 · Computed round by round in chronological order across all 3 tournaments &nbsp;·&nbsp; Run by the Deeeep.io Europe Staff (owned by LordState) &nbsp;·&nbsp; <a href="https://discord.gg/UAFnRKsabe" id="discord-link" target="_blank" rel="noopener" style="color:var(--bio-teal);">Join our Discord</a></footer>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script>
+initBioField(document.body);
+initGlobalSearch();
+renderNav('leaderboard');
+
+const tbody = document.getElementById('rows');
+document.getElementById('p-count').textContent = SITE_DATA.players.length + ' players';
+
+function rankClass(r) {
+  if (r === 1) return 'top1';
+  if (r === 2) return 'top2';
+  if (r === 3) return 'top3';
+  return '';
+}
+
+function render(list) {
+  tbody.innerHTML = list.map(p => `
+    <tr>
+      <td class="rank ${rankClass(p.rank)}">${p.rank}</td>
+      <td>
+        <a href="player.html?pseudo=${encodeURIComponent(p.pseudo)}" class="player-cell">
+          ${avatarHTML(p)}
+          <span>${p.pseudo} ${p.country ? countryFlag(p.country) : ''} ${p.currentStreak >= 2 ? '<span title="' + p.currentStreak + '-match win streak">\u{1F525}</span>' : ''}</span>
+        </a>
+      </td>
+      <td class="elo-val">${p.currentElo}</td>
+      <td class="muted">${p.winrate}% <span style="opacity:.6">(${p.wins}-${p.losses})</span></td>
+      <td class="muted">${p.tournamentsPlayed}</td>
+    </tr>
+  `).join('');
+}
+
+let currentList = [...SITE_DATA.players];
+render(currentList);
+
+const countrySel = document.getElementById('country-filter');
+const countryOptions = [...computeCountryStats()].sort((a,b) => a.name.localeCompare(b.name));
+countrySel.innerHTML += countryOptions.map(c => `<option value="${c.code}">${c.name} (${c.playerCount})</option>`).join('');
+
+function applyFilters() {
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  const country = countrySel.value;
+  currentList = SITE_DATA.players.filter(p =>
+    p.pseudo.toLowerCase().includes(q) && (!country || p.country === country)
+  );
+  render(currentList);
+}
+
+document.getElementById('search').addEventListener('input', applyFilters);
+countrySel.addEventListener('change', applyFilters);
+
+let sortState = { key: 'rank', dir: 1 };
+document.querySelectorAll('th[data-sort]').forEach(th => {
+  th.style.cursor = 'pointer';
+  th.addEventListener('click', () => {
+    const key = th.dataset.sort;
+    sortState.dir = (sortState.key === key) ? -sortState.dir : (key === 'pseudo' ? 1 : -1);
+    sortState.key = key;
+    currentList = [...currentList].sort((a, b) => {
+      if (key === 'pseudo') return sortState.dir * a.pseudo.localeCompare(b.pseudo);
+      return sortState.dir * (a[key] - b[key]);
+    });
+    render(currentList);
+  });
+});
+</script>
+
+</body>
+</html>

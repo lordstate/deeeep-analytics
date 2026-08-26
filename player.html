@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Player Profile — Deeeep.io Analytics</title>
+<meta name="description" content="Elo history, win rate, badges and match history for a Deeeep.io 1v1 Tournament competitor.">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Deeeep.io Analytics">
+<meta property="og:title" content="Player Profile — Deeeep.io Analytics">
+<meta property="og:description" content="Elo history, win rate, badges and match history for a Deeeep.io 1v1 Tournament competitor.">
+<meta property="og:image" content="https://deeeep-analytics.netlify.app/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Player Profile — Deeeep.io Analytics">
+<meta name="twitter:description" content="Elo history, win rate, badges and match history for a Deeeep.io 1v1 Tournament competitor.">
+<meta name="twitter:image" content="https://deeeep-analytics.netlify.app/og-image.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="brand"><span class="glow-dot"></span> DEEEEP.IO ANALYTICS</div>
+  <nav class="top-nav">
+    <a href="index.html" data-page="home">Tournaments</a>
+    <a href="leaderboard.html" data-page="leaderboard">Elo Leaderboard</a>
+    <a href="stats.html" data-page="stats">Stats &amp; Records</a>
+    <a href="compare.html" data-page="compare">Compare</a>
+    <a href="live-map.html" data-page="live-map">Live Map</a>
+    <a href="card-game.html" data-page="card-game">Card Game</a>
+    <a href="championship.html" data-page="championship">Championship <span class="beta-pill">BETA</span></a>
+    <a href="about.html" data-page="about">About</a>
+  </nav>
+</header>
+
+<main>
+  <a href="leaderboard.html" class="back-link" style="margin-top:24px; display:inline-block;">← Leaderboard</a>
+  <div class="player-header" id="p-header"></div>
+  <div class="card-actions" id="card-actions"></div>
+  <div id="p-badges"></div>
+
+  <div class="stat-grid" id="p-stats"></div>
+
+  <div class="section-head"><h2>Elo evolution</h2></div>
+  <div class="chart-card" style="margin-bottom:40px;">
+    <div id="chart"></div>
+  </div>
+
+  <div class="section-head"><h2>Tournament path</h2></div>
+  <div class="table-wrap" style="padding: 4px 16px; margin-bottom:40px;" id="paths"></div>
+
+  <div id="national-section"></div>
+
+  <div class="section-head"><h2>Match history</h2></div>
+  <div class="history-list" id="history"></div>
+</main>
+
+<footer>Results sourced from Challonge · Round dates are estimated (weekly cadence, summer start) &nbsp;·&nbsp; Run by the Deeeep.io Europe Staff (owned by LordState) &nbsp;·&nbsp; <a href="https://discord.gg/UAFnRKsabe" id="discord-link" target="_blank" rel="noopener" style="color:var(--bio-teal);">Join our Discord</a></footer>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script src="card.js"></script>
+<script>
+initBioField(document.body);
+initGlobalSearch();
+
+const pseudo = qs('pseudo');
+const p = playerBySlug(pseudo);
+const headerEl = document.getElementById('p-header');
+const statsEl = document.getElementById('p-stats');
+const historyEl = document.getElementById('history');
+const chartEl = document.getElementById('chart');
+
+if (!p) {
+  headerEl.innerHTML = '<h1>Player not found</h1>';
+} else {
+  document.title = p.pseudo + ' — Deeeep.io Analytics';
+  headerEl.innerHTML = `
+    ${avatarHTML(p)}
+    <div>
+      <h1>${p.pseudo} ${p.country ? countryFlag(p.country) : ''}</h1>
+      <div class="sub">
+        <span>Rank #${p.rank}</span>
+        <span class="elo-val">${p.currentElo} Elo</span>
+        <span>${p.tournamentsPlayed} tournament(s) played</span>
+        ${p.countryName ? `<span>${p.countryName}</span>` : ''}
+      </div>
+      ${p.aka ? `<div class="aka-note">Also known as <a href="player.html?pseudo=${encodeURIComponent(p.aka)}">${p.aka}</a> — same person, separate account entry kept for bracket accuracy.</div>` : ''}
+    </div>
+  `;
+
+  const history = getPlayerHistory(pseudo);
+
+  initPlayerCardButton(document.getElementById('card-actions'), p);
+  document.getElementById('p-badges').innerHTML = badgeHTML(p.badges);
+  if (p.linkedAccount) {
+    document.getElementById('p-badges').innerHTML += `<p class="muted" style="font-size:13px; margin-top:10px;">\u26A0\uFE0F Known secondary account of <a href="player.html?pseudo=${encodeURIComponent(p.linkedAccount)}" style="color:var(--bio-teal);">${p.linkedAccount}</a> — both entries are kept separate since they competed independently in the same edition.</p>`;
+  }
+
+  statsEl.innerHTML = `
+    <div class="stat-box"><div class="label">Win rate</div><div class="value">${p.winrate}%</div><div class="sub">${p.wins}W – ${p.losses}L</div></div>
+    <div class="stat-box"><div class="label">Peak Elo</div><div class="value">${p.peakElo}</div><div class="sub">Current: ${p.currentElo}</div></div>
+    <div class="stat-box"><div class="label">Best win streak</div><div class="value">${p.bestWinStreak}</div><div class="sub">${p.matchesPlayed} matches total</div></div>
+    <div class="stat-box"><div class="label">Giant kills</div><div class="value">${p.giantKills}</div><div class="sub">wins as the underdog</div></div>
+    <div class="stat-box"><div class="label">Current rank</div><div class="value">#${p.rank} ${rankChangeArrow(p.rankChangeLastMatch)}</div><div class="sub">Top ${Math.max(1, Math.round(100 * p.rank / SITE_DATA.players.length))}% · out of ${SITE_DATA.players.length}</div></div>
+    <div class="stat-box"><div class="label">Tournaments</div><div class="value">${p.tournamentsPlayed}</div><div class="sub">${p.tournaments.map(t=>t.split(' ')[0]).join(', ')}</div></div>
+  `;
+
+  renderEloChart(chartEl, history);
+  renderPlayerPaths(document.getElementById('paths'), pseudo);
+
+  // National leaderboard (players sharing this player's country)
+  const natEl = document.getElementById('national-section');
+  if (p.country) {
+    const countrymates = SITE_DATA.players.filter(x => x.country === p.country).sort((a,b) => b.currentElo - a.currentElo);
+    const nRank = countrymates.findIndex(x => x.pseudo === pseudo) + 1;
+    natEl.innerHTML = `
+      <div class="section-head">
+        <h2>${countryFlag(p.country)} National ranking — ${p.countryName}</h2>
+        <span class="count">#${nRank} of ${countrymates.length}</span>
+      </div>
+      <div class="table-wrap" style="margin-bottom:40px;">
+        <table class="classement">
+          <thead><tr><th>#</th><th>Player</th><th>Elo</th></tr></thead>
+          <tbody>
+            ${countrymates.slice(0, 10).map((x, i) => `
+              <tr style="${x.pseudo === pseudo ? 'background:rgba(53,227,196,0.06);' : ''}">
+                <td class="rank">${i+1}</td>
+                <td><a href="player.html?pseudo=${encodeURIComponent(x.pseudo)}" class="player-cell">${avatarHTML(x)}<span>${x.pseudo}</span></a></td>
+                <td class="elo-val">${x.currentElo}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+  } else {
+    natEl.innerHTML = '';
+  }
+
+  historyEl.innerHTML = history.map(h => {
+    const delta = h.eloAfter - h.eloBefore;
+    return `
+      <div class="match-card">
+        <div class="row ${h.won ? 'winner' : ''}">
+          <span class="name">${h.won ? 'Win' : 'Loss'} vs <a href="player.html?pseudo=${encodeURIComponent(h.opponent)}">${h.opponent}</a></span>
+          <span class="score">${h.score}</span>
+        </div>
+        <div class="row" style="padding-top:0;">
+          <span class="muted" style="font-size:12px;">${h.tournament} · ${h.round} · ${formatDate(h.date)}</span>
+          <span class="elo-shift ${delta >= 0 ? 'up' : 'down'}">${h.eloBefore} → ${h.eloAfter} (${delta >= 0 ? '+' : ''}${delta})</span>
+        </div>
+      </div>
+    `;
+  }).join('') || '<p class="muted">No matches found.</p>';
+}
+</script>
+
+</body>
+</html>

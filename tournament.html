@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tournament Bracket — Deeeep.io Analytics</title>
+<meta name="description" content="Round-by-round results and bracket for a Deeeep.io 1v1 Tournament edition.">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Deeeep.io Analytics">
+<meta property="og:title" content="Tournament Bracket — Deeeep.io Analytics">
+<meta property="og:description" content="Round-by-round results and bracket for a Deeeep.io 1v1 Tournament edition.">
+<meta property="og:image" content="https://deeeep-analytics.netlify.app/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Tournament Bracket — Deeeep.io Analytics">
+<meta name="twitter:description" content="Round-by-round results and bracket for a Deeeep.io 1v1 Tournament edition.">
+<meta name="twitter:image" content="https://deeeep-analytics.netlify.app/og-image.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="brand"><span class="glow-dot"></span> DEEEEP.IO ANALYTICS</div>
+  <nav class="top-nav">
+    <a href="index.html" data-page="home">Tournaments</a>
+    <a href="leaderboard.html" data-page="leaderboard">Elo Leaderboard</a>
+    <a href="stats.html" data-page="stats">Stats &amp; Records</a>
+    <a href="compare.html" data-page="compare">Compare</a>
+    <a href="live-map.html" data-page="live-map">Live Map</a>
+    <a href="card-game.html" data-page="card-game">Card Game</a>
+    <a href="championship.html" data-page="championship">Championship <span class="beta-pill">BETA</span></a>
+    <a href="about.html" data-page="about">About</a>
+  </nav>
+</header>
+
+<main>
+  <div class="t-header">
+    <a href="index.html" class="back-link">← All tournaments</a>
+    <h1 id="t-title"></h1>
+    <div class="meta" id="t-meta"></div>
+    <a id="challonge-link" class="challonge-link" target="_blank" rel="noopener" style="display:none;">View original bracket on Challonge ↗</a>
+  </div>
+
+  <div class="view-toggle">
+    <button id="btn-list" class="active">Round list</button>
+    <button id="btn-bracket">Bracket view</button>
+  </div>
+  <div class="search-bar">
+    <input type="text" id="player-filter" placeholder="Highlight a player's path…">
+  </div>
+
+  <div id="zones"></div>
+  <div id="bracket-view" style="display:none;"></div>
+</main>
+
+<footer>Results sourced from Challonge &nbsp;·&nbsp; Run by the Deeeep.io Europe Staff (owned by LordState) &nbsp;·&nbsp; <a href="https://discord.gg/UAFnRKsabe" target="_blank" rel="noopener" id="discord-link" style="color:var(--bio-teal);">Join our Discord</a></footer>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script>
+initBioField(document.body);
+initGlobalSearch();
+renderNav('home');
+
+const slug = qs('slug');
+const t = SITE_DATA.tournaments.find(x => x.slug === slug);
+const rounds = SITE_DATA.matchesByTournament[slug] || [];
+
+if (!t) {
+  document.getElementById('t-title').textContent = "Tournament not found";
+} else {
+  document.title = t.name + ' — Deeeep.io Analytics';
+  document.getElementById('t-title').textContent = t.name;
+  const isLive = t.status === 'Ongoing';
+  document.getElementById('t-meta').innerHTML = `
+    <span>${t.players} players</span>
+    <span>${t.matchesPlayed} matches played</span>
+    <span class="status-pill ${isLive ? 'live' : 'done'}">${isLive ? 'Ongoing' : 'Completed'}</span>
+  `;
+  if (t.challongeId) {
+    const link = document.getElementById('challonge-link');
+    link.href = `https://challonge.com/fr/tournaments/${t.challongeId}`;
+    link.style.display = 'inline-flex';
+  }
+
+  const zonesEl = document.getElementById('zones');
+  rounds.forEach((r, idx) => {
+    const zone = document.createElement('div');
+    zone.className = 'zone';
+    const cards = r.matches.map(m => {
+      const j1win = m.winner === m.j1;
+      const delta1 = m.e1p - m.e1a, delta2 = m.e2p - m.e2a;
+      return `
+        <div class="match-card ${m.isUpset ? 'is-upset' : ''}" data-players="${m.j1}|${m.j2}">
+          ${m.isUpset ? '<div class="upset-tag">⚡ Upset</div>' : ''}
+          <div class="row ${j1win ? 'winner' : ''}">
+            <span class="name"><a href="player.html?pseudo=${encodeURIComponent(m.j1)}">${m.j1}</a></span>
+            <span class="score">${m.s1}</span>
+          </div>
+          <div class="row" style="padding-top:0;">
+            <span class="elo-shift muted" style="color:var(--text-faint)">${formatDate(m.date)}</span>
+            <span class="elo-shift ${delta1 >= 0 ? 'up' : 'down'}">${delta1 >= 0 ? '+' : ''}${delta1}</span>
+          </div>
+          <hr>
+          <div class="row ${!j1win ? 'winner' : ''}">
+            <span class="name"><a href="player.html?pseudo=${encodeURIComponent(m.j2)}">${m.j2}</a></span>
+            <span class="score">${m.s2}</span>
+          </div>
+          <div class="row" style="padding-top:0;">
+            <span></span>
+            <span class="elo-shift ${delta2 >= 0 ? 'up' : 'down'}">${delta2 >= 0 ? '+' : ''}${delta2}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+    zone.innerHTML = `
+      <div class="zone-label">Stage ${idx + 1} / ${rounds.length} · ${formatDate(r.matches[0].date)}</div>
+      <div class="zone-title">${r.round} <span class="upset-count">${r.matches.filter(m=>m.isUpset).length ? '⚡ ' + r.matches.filter(m=>m.isUpset).length + ' upset' + (r.matches.filter(m=>m.isUpset).length>1?'s':'') + ' this round' : ''}</span></div>
+      <div class="match-grid">${cards}</div>
+    `;
+    zonesEl.appendChild(zone);
+  });
+
+  // ---- Bracket view (true tree layout: aligned round headers + connector lines) ----
+  const bracketEl = document.getElementById('bracket-view');
+  renderBracketTree(bracketEl, rounds);
+
+  // ---- View toggle ----
+  const btnList = document.getElementById('btn-list');
+  const btnBracket = document.getElementById('btn-bracket');
+  btnList.addEventListener('click', () => {
+    btnList.classList.add('active'); btnBracket.classList.remove('active');
+    zonesEl.style.display = ''; bracketEl.style.display = 'none';
+  });
+  btnBracket.addEventListener('click', () => {
+    btnBracket.classList.add('active'); btnList.classList.remove('active');
+    zonesEl.style.display = 'none'; bracketEl.style.display = '';
+  });
+
+  // ---- Player filter (highlight / dim) ----
+  document.getElementById('player-filter').addEventListener('input', (e) => {
+    const q = e.target.value.trim().toLowerCase();
+    document.querySelectorAll('[data-players]').forEach(card => {
+      const players = card.dataset.players.toLowerCase();
+      if (!q) { card.classList.remove('filter-highlight', 'filter-dim'); return; }
+      if (players.includes(q)) { card.classList.add('filter-highlight'); card.classList.remove('filter-dim'); }
+      else { card.classList.add('filter-dim'); card.classList.remove('filter-highlight'); }
+    });
+  });
+}
+</script>
+
+</body>
+</html>

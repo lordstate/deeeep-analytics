@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Map — Deeeep.io Analytics</title>
+<meta name="description" content="Where the Deeeep.io competitive community lives, mapped around the world.">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Deeeep.io Analytics">
+<meta property="og:title" content="Live Map — Deeeep.io Analytics">
+<meta property="og:description" content="Where the Deeeep.io competitive community lives, mapped around the world.">
+<meta property="og:image" content="https://deeeep-analytics.netlify.app/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Live Map — Deeeep.io Analytics">
+<meta name="twitter:description" content="Where the Deeeep.io competitive community lives, mapped around the world.">
+<meta name="twitter:image" content="https://deeeep-analytics.netlify.app/og-image.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="brand"><span class="glow-dot"></span> DEEEEP.IO ANALYTICS</div>
+  <nav class="top-nav">
+    <a href="index.html" data-page="home">Tournaments</a>
+    <a href="leaderboard.html" data-page="leaderboard">Elo Leaderboard</a>
+    <a href="stats.html" data-page="stats">Stats &amp; Records</a>
+    <a href="compare.html" data-page="compare">Compare</a>
+    <a href="live-map.html" data-page="live-map">Live Map</a>
+    <a href="card-game.html" data-page="card-game">Card Game</a>
+    <a href="championship.html" data-page="championship">Championship <span class="beta-pill">BETA</span></a>
+    <a href="about.html" data-page="about">About</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero" style="padding-top:48px;">
+    <div class="eyebrow">Around the world</div>
+    <h1>Where the Deeeep.io competitive community lives.</h1>
+    <p class="lead">Every glowing point is a country with at least one known competitor. Countries are self-reported by the organizer, not everyone is mapped yet.</p>
+  </section>
+
+  <div class="chart-card" style="margin-bottom:40px; padding:20px;">
+    <div id="world-map"></div>
+  </div>
+
+  <section>
+    <div class="section-head"><h2>Country leaderboard</h2></div>
+    <div class="search-bar">
+      <select id="country-select" class="sim-input" style="max-width:280px; text-align:left;"></select>
+    </div>
+    <div class="table-wrap" style="margin-bottom:40px;">
+      <table class="classement">
+        <thead><tr><th>#</th><th>Player</th><th>Elo</th><th>Tournaments</th></tr></thead>
+        <tbody id="country-rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>All countries</h2></div>
+    <div class="table-wrap">
+      <table class="classement compare-table" id="country-sort-table">
+        <thead>
+          <tr>
+            <th data-sort="name" style="text-align:left;">Country</th>
+            <th data-sort="playerCount">Players</th>
+            <th data-sort="avgElo">Avg Elo</th>
+            <th data-sort="topPlayer">Top player</th>
+            <th data-sort="tournamentWins">Tournament wins</th>
+          </tr>
+        </thead>
+        <tbody id="country-table-rows"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<footer>Country data is manually provided by the organizer and updated periodically &nbsp;·&nbsp; Run by the Deeeep.io Europe Staff (owned by LordState) &nbsp;·&nbsp; <a href="https://discord.gg/UAFnRKsabe" id="discord-link" target="_blank" rel="noopener" style="color:var(--bio-teal);">Join our Discord</a></footer>
+
+<script src="data.js"></script>
+<script src="world-map-data.js"></script>
+<script src="app.js"></script>
+<script>
+initBioField(document.body);
+initGlobalSearch();
+renderNav('live-map');
+
+// Computed once from the live player list (see computeCountryStats in app.js) so every
+// player with a country set is reflected here, instead of relying on a precomputed
+// snapshot that can go stale as new players/results are added.
+const countryStats = computeCountryStats();
+const unmappedCount = SITE_DATA.players.filter(p => !p.country).length;
+if (unmappedCount > 0) {
+  document.querySelector('.hero .lead').insertAdjacentHTML('afterend',
+    `<p class="muted" style="font-size:13px; margin-top:-8px;">${countryStats.length} countries mapped, covering ${SITE_DATA.players.length - unmappedCount} players &nbsp;·&nbsp; ${unmappedCount} players have no country on file yet.</p>`);
+}
+
+// ---- World map (real coastlines, equirectangular projection matching d3.geoEquirectangular) ----
+function renderWorldMap() {
+  const W = 960, H = 460;
+  const scale = W / (2 * Math.PI);
+  const project = (lat, lon) => {
+    const x = scale * (lon * Math.PI / 180) + W / 2;
+    const y = -scale * (lat * Math.PI / 180) + H / 2;
+    return [x, y];
+  };
+  const maxCount = Math.max(...countryStats.map(c => c.playerCount));
+  const dots = countryStats.map(c => {
+    const info = SITE_DATA.countryInfo[c.code];
+    if (!info) return '';
+    const [x, y] = project(info.lat, info.lon);
+    const r = 4 + 10 * (c.playerCount / maxCount);
+    return `<a href="#" class="map-dot-link" data-code="${c.code}">
+      <circle cx="${x}" cy="${y}" r="${r}" class="map-dot" data-code="${c.code}">
+        <title>${c.name}: ${c.playerCount} player(s), avg Elo ${c.avgElo}</title>
+      </circle>
+    </a>`;
+  }).join('');
+
+  document.getElementById('world-map').innerHTML = `
+    <svg viewBox="0 0 ${W} ${H}" class="world-map-svg">
+      <path d="${WORLD_LAND_PATH}" class="map-land"/>
+      ${dots}
+    </svg>
+  `;
+
+  document.querySelectorAll('.map-dot').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      document.getElementById('country-select').value = el.dataset.code;
+      renderCountryBoard();
+      document.getElementById('country-select').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  });
+}
+renderWorldMap();
+
+// ---- Selectable country leaderboard ----
+const sortedCountries = [...countryStats].sort((a,b) => a.name.localeCompare(b.name));
+const sel = document.getElementById('country-select');
+sel.innerHTML = sortedCountries.map(c => `<option value="${c.code}">${c.name} (${c.playerCount})</option>`).join('');
+
+function renderCountryBoard() {
+  const code = sel.value;
+  const list = SITE_DATA.players.filter(p => p.country === code).sort((a,b) => b.currentElo - a.currentElo);
+  document.getElementById('country-rows').innerHTML = list.map((p, i) => `
+    <tr>
+      <td class="rank">${i+1}</td>
+      <td><a href="player.html?pseudo=${encodeURIComponent(p.pseudo)}" class="player-cell">${avatarHTML(p)}<span>${p.pseudo}</span></a></td>
+      <td class="elo-val">${p.currentElo}</td>
+      <td class="muted">${p.tournamentsPlayed}</td>
+    </tr>
+  `).join('');
+}
+sel.addEventListener('change', renderCountryBoard);
+renderCountryBoard();
+
+// ---- Full country stats table (sortable) ----
+let countryTableData = [...countryStats];
+function renderCountryTable() {
+  document.getElementById('country-table-rows').innerHTML = countryTableData.map(c => `
+    <tr>
+      <td style="text-align:left; display:flex; align-items:center; gap:8px;">${countryFlag(c.code)} ${c.name}</td>
+      <td>${c.playerCount}</td>
+      <td>${c.avgElo}</td>
+      <td><a href="player.html?pseudo=${encodeURIComponent(c.topPlayer)}">${c.topPlayer}</a> (${c.topPlayerElo})</td>
+      <td>${c.tournamentWins}</td>
+    </tr>
+  `).join('');
+}
+renderCountryTable();
+
+let ctSort = { key: 'avgElo', dir: -1 };
+document.querySelectorAll('#country-sort-table th[data-sort]').forEach(th => {
+  th.style.cursor = 'pointer';
+  th.addEventListener('click', () => {
+    const key = th.dataset.sort;
+    ctSort.dir = (ctSort.key === key) ? -ctSort.dir : -1;
+    ctSort.key = key;
+    countryTableData = [...countryTableData].sort((a, b) => {
+      if (typeof a[key] === 'string') return ctSort.dir * b[key].localeCompare(a[key]) * -1;
+      return ctSort.dir * (b[key] - a[key]);
+    });
+    renderCountryTable();
+  });
+});
+</script>
+
+</body>
+</html>

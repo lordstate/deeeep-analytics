@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compare Players — Deeeep.io Analytics</title>
+<meta name="description" content="Head-to-head comparison between any two Deeeep.io 1v1 Tournament competitors.">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Deeeep.io Analytics">
+<meta property="og:title" content="Compare Players — Deeeep.io Analytics">
+<meta property="og:description" content="Head-to-head comparison between any two Deeeep.io 1v1 Tournament competitors.">
+<meta property="og:image" content="https://deeeep-analytics.netlify.app/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Compare Players — Deeeep.io Analytics">
+<meta name="twitter:description" content="Head-to-head comparison between any two Deeeep.io 1v1 Tournament competitors.">
+<meta name="twitter:image" content="https://deeeep-analytics.netlify.app/og-image.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="brand"><span class="glow-dot"></span> DEEEEP.IO ANALYTICS</div>
+  <nav class="top-nav">
+    <a href="index.html" data-page="home">Tournaments</a>
+    <a href="leaderboard.html" data-page="leaderboard">Elo Leaderboard</a>
+    <a href="stats.html" data-page="stats">Stats &amp; Records</a>
+    <a href="compare.html" data-page="compare">Compare</a>
+    <a href="live-map.html" data-page="live-map">Live Map</a>
+    <a href="card-game.html" data-page="card-game">Card Game</a>
+    <a href="championship.html" data-page="championship">Championship <span class="beta-pill">BETA</span></a>
+    <a href="about.html" data-page="about">About</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero" style="padding-top:48px;">
+    <div class="eyebrow">Head to head</div>
+    <h1>Compare two players.</h1>
+    <p class="lead">Pick any two competitors to see how they stack up — and whether they've ever crossed paths in the bracket.</p>
+  </section>
+
+  <div class="compare-pick">
+    <select id="p1"></select>
+    <div class="vs">VS</div>
+    <select id="p2"></select>
+  </div>
+
+  <div class="compare-grid" id="compare-grid"></div>
+
+  <div id="h2h-section"></div>
+</main>
+
+<footer>Rematches only appear if two players have faced each other more than once across editions &nbsp;·&nbsp; Run by the Deeeep.io Europe Staff (owned by LordState) &nbsp;·&nbsp; <a href="https://discord.gg/UAFnRKsabe" id="discord-link" target="_blank" rel="noopener" style="color:var(--bio-teal);">Join our Discord</a></footer>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script>
+initBioField(document.body);
+initGlobalSearch();
+renderNav('compare');
+
+const sorted = [...SITE_DATA.players].sort((a,b) => a.pseudo.localeCompare(b.pseudo));
+const opts = sorted.map(p => `<option value="${p.pseudo}">${p.pseudo} (#${p.rank})</option>`).join('');
+document.getElementById('p1').innerHTML = opts;
+document.getElementById('p2').innerHTML = opts;
+document.getElementById('p1').value = sorted[0]?.pseudo;
+document.getElementById('p2').value = sorted[1]?.pseudo;
+
+function metricRow(label, v1, v2, higherIsBetter = true) {
+  const b1 = higherIsBetter ? v1 >= v2 : v1 <= v2;
+  const b2 = higherIsBetter ? v2 >= v1 : v2 <= v1;
+  return [
+    `<div class="metric ${b1 && v1 !== v2 ? 'better' : ''}"><span>${label}</span><b>${v1}</b></div>`,
+    `<div class="metric ${b2 && v1 !== v2 ? 'better' : ''}"><span>${label}</span><b>${v2}</b></div>`,
+  ];
+}
+
+function render() {
+  const a = playerBySlug(document.getElementById('p1').value);
+  const b = playerBySlug(document.getElementById('p2').value);
+  if (!a || !b) return;
+
+  const rows = [
+    metricRow('Current Elo', a.currentElo, b.currentElo),
+    metricRow('Peak Elo', a.peakElo, b.peakElo),
+    metricRow('Win rate', a.winrate + '%', b.winrate + '%'),
+    metricRow('Wins', a.wins, b.wins),
+    metricRow('Losses', a.losses, b.losses, false),
+    metricRow('Best win streak', a.bestWinStreak, b.bestWinStreak),
+    metricRow('Tournaments played', a.tournamentsPlayed, b.tournamentsPlayed),
+    metricRow('Giant kills', a.giantKills, b.giantKills),
+  ];
+
+  document.getElementById('compare-grid').innerHTML = `
+    <div class="compare-box">
+      <div class="name"><a href="player.html?pseudo=${encodeURIComponent(a.pseudo)}">${a.pseudo}</a></div>
+      ${rows.map(r => r[0]).join('')}
+      ${badgeHTML(a.badges)}
+    </div>
+    <div class="compare-box">
+      <div class="name"><a href="player.html?pseudo=${encodeURIComponent(b.pseudo)}">${b.pseudo}</a></div>
+      ${rows.map(r => r[1]).join('')}
+      ${badgeHTML(b.badges)}
+    </div>
+  `;
+
+  const key1 = `${a.pseudo}|${b.pseudo}`;
+  const key2 = `${b.pseudo}|${a.pseudo}`;
+  const h2h = SITE_DATA.rematches[key1] || SITE_DATA.rematches[key2];
+  const h2hEl = document.getElementById('h2h-section');
+  if (h2h) {
+    h2hEl.innerHTML = `
+      <div class="section-head"><h2>Head-to-head history</h2></div>
+      <div class="history-list">
+        ${h2h.map(m => `
+          <div class="match-card">
+            <div class="row ${m.winner === a.pseudo ? 'winner' : ''}"><span class="name">${a.pseudo}</span><span class="score">${m.j1 === a.pseudo ? m.score.split('-')[0] : m.score.split('-')[1]}</span></div>
+            <div class="row ${m.winner === b.pseudo ? 'winner' : ''}"><span class="name">${b.pseudo}</span><span class="score">${m.j1 === b.pseudo ? m.score.split('-')[0] : m.score.split('-')[1]}</span></div>
+            <div class="row" style="padding-top:0;"><span class="muted" style="font-size:12px;">${m.tournament} · ${m.round}</span></div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  } else {
+    h2hEl.innerHTML = `
+      <div class="section-head"><h2>Head-to-head history</h2></div>
+      <p class="muted">These two haven't faced each other more than once (or ever) across the tracked editions.</p>
+    `;
+  }
+}
+
+document.getElementById('p1').addEventListener('change', render);
+document.getElementById('p2').addEventListener('change', render);
+render();
+</script>
+
+</body>
+</html>

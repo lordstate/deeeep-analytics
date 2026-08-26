@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stats & Highlights — Deeeep.io Analytics</title>
+<meta name="description" content="Community stats, records and highlights across every Deeeep.io 1v1 Tournament edition.">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Deeeep.io Analytics">
+<meta property="og:title" content="Stats & Highlights — Deeeep.io Analytics">
+<meta property="og:description" content="Community stats, records and highlights across every Deeeep.io 1v1 Tournament edition.">
+<meta property="og:image" content="https://deeeep-analytics.netlify.app/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Stats & Highlights — Deeeep.io Analytics">
+<meta name="twitter:description" content="Community stats, records and highlights across every Deeeep.io 1v1 Tournament edition.">
+<meta name="twitter:image" content="https://deeeep-analytics.netlify.app/og-image.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="brand"><span class="glow-dot"></span> DEEEEP.IO ANALYTICS</div>
+  <nav class="top-nav">
+    <a href="index.html" data-page="home">Tournaments</a>
+    <a href="leaderboard.html" data-page="leaderboard">Elo Leaderboard</a>
+    <a href="stats.html" data-page="stats">Stats &amp; Records</a>
+    <a href="compare.html" data-page="compare">Compare</a>
+    <a href="live-map.html" data-page="live-map">Live Map</a>
+    <a href="card-game.html" data-page="card-game">Card Game</a>
+    <a href="championship.html" data-page="championship">Championship <span class="beta-pill">BETA</span></a>
+    <a href="about.html" data-page="about">About</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero" style="padding-top:48px;">
+    <div class="eyebrow">The numbers behind the bracket</div>
+    <h1>Community stats & highlights.</h1>
+    <p class="lead">Aggregate numbers across all three tournaments, plus a few of the wildest moments in Deeeep.io competitive history.</p>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>Overall totals</h2></div>
+    <div class="stat-grid" id="totals"></div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>Hall of fame</h2></div>
+    <div id="facts"></div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>Tournament growth</h2></div>
+    <div class="chart-card" style="margin-bottom:40px;"><div id="growth-chart"></div></div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>Community Elo distribution</h2></div>
+    <p class="lead" style="font-size:13px; margin-bottom:16px;">How current ratings are spread across every player who has ever competed.</p>
+    <div class="chart-card" style="margin-bottom:40px;"><div id="dist-chart"></div></div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>Player return rate</h2></div>
+    <div class="stat-grid" id="return-rate" style="grid-template-columns: repeat(2,1fr);"></div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>Cinderella runs</h2></div>
+    <p class="lead" style="font-size:13px; margin-bottom:16px;">The lowest-rated player to make a deep run in each edition.</p>
+    <div id="cinderella-cards"></div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>Tournament comparison</h2></div>
+    <div class="table-wrap">
+      <table class="classement compare-table">
+        <thead>
+          <tr><th>Tournament</th><th>Players</th><th>Matches</th><th>Nail-biters (3-2)</th><th>Avg Elo</th><th>Competitiveness*</th><th>Status</th></tr>
+        </thead>
+        <tbody id="compare-rows"></tbody>
+      </table>
+    </div>
+    <p class="muted" style="font-size:12px; margin-top:10px;">*Lower = a more tightly-matched field (based on standard deviation of players' starting Elo).</p>
+  </section>
+
+  <section id="records">
+    <div class="section-head"><h2>Record book</h2></div>
+    <p class="lead" style="font-size:13px; margin-bottom:16px;">The biggest blowouts, closest finals and Elo swings across every edition.</p>
+    <div id="records-cards"></div>
+  </section>
+</main>
+
+<footer>Nail-biter = a match that went the full distance to a 3-2 score &nbsp;·&nbsp; Run by the Deeeep.io Europe Staff (owned by LordState) &nbsp;·&nbsp; <a href="https://discord.gg/UAFnRKsabe" id="discord-link" target="_blank" rel="noopener" style="color:var(--bio-teal);">Join our Discord</a></footer>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script>
+initBioField(document.body);
+initGlobalSearch();
+renderNav('stats');
+
+const gs = SITE_DATA.globalStats;
+const countryStats = computeCountryStats();
+const qualifiedCountries = countryStats.filter(c => c.playerCount >= 2);
+const topCountry = qualifiedCountries.length ? [...qualifiedCountries].sort((a,b) => b.avgElo - a.avgElo)[0] : null;
+const biggestCountry = countryStats.length ? [...countryStats].sort((a,b) => b.playerCount - a.playerCount)[0] : null;
+
+document.getElementById('totals').innerHTML = `
+  <div class="stat-box"><div class="label">Total players</div><div class="value">${gs.totalPlayers}</div><div class="sub">across all editions</div></div>
+  <div class="stat-box"><div class="label">Total matches</div><div class="value">${gs.totalMatches}</div><div class="sub">played to date</div></div>
+  <div class="stat-box"><div class="label">Tournaments run</div><div class="value">${gs.totalTournaments}</div><div class="sub">2023 → 2026</div></div>
+`;
+
+const upsetLink = (n) => `<a href="player.html?pseudo=${encodeURIComponent(n)}"><b>${n}</b></a>`;
+
+document.getElementById('facts').innerHTML = `
+  <div class="fact-card">
+    <div class="fact-label">Biggest upset</div>
+    <p>${upsetLink(gs.biggestUpset.winner)} took down ${upsetLink(gs.biggestUpset.loser)} despite trailing by <b>${gs.biggestUpset.eloGapOvercome} Elo</b> — ${gs.biggestUpset.score} in ${gs.biggestUpset.round} of the ${gs.biggestUpset.tournament}.</p>
+  </div>
+  <div class="fact-card">
+    <div class="fact-label">Most active competitor</div>
+    <p>${upsetLink(gs.mostActivePlayer.pseudo)} has played the most matches of anyone: <b>${gs.mostActivePlayer.matches}</b> total.</p>
+  </div>
+  <div class="fact-card">
+    <div class="fact-label">Best win rate (min. 5 matches)</div>
+    <p>${upsetLink(gs.bestWinratePlayer.pseudo)} boasts a <b>${gs.bestWinratePlayer.winrate}%</b> win rate over ${gs.bestWinratePlayer.matches} matches.</p>
+  </div>
+  <div class="fact-card">
+    <div class="fact-label">Longest win streak</div>
+    <p>${upsetLink(gs.longestWinStreak.pseudo)} strung together <b>${gs.longestWinStreak.streak}</b> consecutive wins.</p>
+  </div>
+  <div class="fact-card">
+    <div class="fact-label">Most tournaments played</div>
+    <p>${upsetLink(gs.mostTournaments.pseudo)} has competed in <b>${gs.mostTournaments.count}</b> out of ${gs.totalTournaments} editions.</p>
+  </div>
+  <div class="fact-card">
+    <div class="fact-label">Highest Elo ever reached</div>
+    <p>${upsetLink(gs.peakEloEver.pseudo)} peaked at <b>${gs.peakEloEver.elo} Elo</b>, the highest rating anyone has held.</p>
+  </div>
+  <div class="fact-card">
+    <div class="fact-label">Top giant killer</div>
+    <p>${upsetLink(gs.topGiantKiller.pseudo)} has beaten a higher-rated opponent <b>${gs.topGiantKiller.count}</b> times — the most upset wins of anyone.</p>
+  </div>
+  <div class="fact-card">
+    <div class="fact-label">Deadliest round</div>
+    <p><b>${gs.deadliestRound.round}</b> has produced the most upsets of any round across all editions, with <b>${gs.deadliestRound.upsets}</b> higher-rated players eliminated.</p>
+  </div>
+  <div class="fact-card">
+    <div class="fact-label">Strongest country (avg Elo, 2+ players)</div>
+    <p>${topCountry ? `<b>${topCountry.name}</b> leads with an average rating of <b>${topCountry.avgElo}</b> across its ${topCountry.playerCount} players.` : 'Not enough data yet.'}</p>
+  </div>
+  <div class="fact-card">
+    <div class="fact-label">Best represented country</div>
+    <p>${biggestCountry ? `<b>${biggestCountry.name}</b> has the most competitors of any country, with <b>${biggestCountry.playerCount}</b> players.` : 'Not enough data yet.'}</p>
+  </div>
+`;
+
+document.getElementById('growth-chart').innerHTML = '';
+renderBarChart(document.getElementById('growth-chart'), SITE_DATA.tournaments.map(t => ({ label: t.year, value: t.players })));
+
+const dist = gs.eloDistribution.map(b => ({ label: b.bucket, value: b.count }));
+renderBarChart(document.getElementById('dist-chart'), dist);
+
+document.getElementById('return-rate').innerHTML = `
+  <div class="stat-box"><div class="label">2023 → 2024 return rate</div><div class="value">${gs.returnRate.from2023to2024}%</div><div class="sub">of 2023 players came back in 2024</div></div>
+  <div class="stat-box"><div class="label">2024 → 2026 return rate</div><div class="value">${gs.returnRate.from2024to2026}%</div><div class="sub">of 2024 players came back in 2026</div></div>
+`;
+
+document.getElementById('cinderella-cards').innerHTML = SITE_DATA.tournaments.map(t => {
+  const c = gs.cinderellaByTournament[t.slug];
+  if (!c) return '';
+  return `
+    <div class="fact-card">
+      <div class="fact-label">${t.name}</div>
+      <p>${upsetLink(c.pseudo)} entered the tournament rated just <b>${c.startingElo}</b> and still fought through <b>${c.roundsReached}</b> rounds — this edition's Cinderella story.</p>
+    </div>
+  `;
+}).join('');
+
+
+document.getElementById('compare-rows').innerHTML = SITE_DATA.tournaments.map(t => `
+  <tr>
+    <td><a href="tournament.html?slug=${t.slug}">${t.name}</a></td>
+    <td>${t.players}</td>
+    <td>${t.matchesPlayed}</td>
+    <td>${gs.nailbitersByTournament[t.slug] || 0}</td>
+    <td>${gs.eloStatsByTournament[t.slug]?.avg ?? '—'}</td>
+    <td>${gs.competitivenessByTournament[t.slug] ?? '—'}</td>
+    <td><span class="status-pill ${t.status === 'Ongoing' ? 'live' : 'done'}">${t.status}</span></td>
+  </tr>
+`).join('');
+
+// ---- Record book (merged in from the former standalone Records page) ----
+const rec = SITE_DATA.records;
+const recordCards = [];
+
+if (rec.biggestBlowout) {
+  const b = rec.biggestBlowout;
+  recordCards.push(`
+    <div class="fact-card">
+      <div class="fact-label">Biggest blowout (3-0 sweep)</div>
+      <p>${upsetLink(b.winner)} dominated ${upsetLink(b.loser)} 3-0 despite already being rated <b>${b.eloGap} Elo</b> higher — the most one-sided sweep on record, in ${b.round} of the ${b.tournament}.</p>
+    </div>
+  `);
+}
+if (rec.closestFinal) {
+  const c = rec.closestFinal;
+  recordCards.push(`
+    <div class="fact-card">
+      <div class="fact-label">Closest final on paper</div>
+      <p>${upsetLink(c.j1)} vs ${upsetLink(c.j2)} in the ${c.tournament} — only <b>${c.eloGap} Elo</b> separated them going in. ${upsetLink(c.winner)} won it ${c.score}.</p>
+    </div>
+  `);
+}
+if (rec.biggestTournamentGain) {
+  const g = rec.biggestTournamentGain;
+  const tName = SITE_DATA.tournaments.find(t => t.slug === g.tournamentSlug)?.name || g.tournamentSlug;
+  recordCards.push(`
+    <div class="fact-card">
+      <div class="fact-label">Biggest single-tournament Elo gain</div>
+      <p>${upsetLink(g.pseudo)} gained <b>+${g.gain} Elo</b> over the course of the ${tName} alone — the largest rating jump from a single run.</p>
+    </div>
+  `);
+}
+
+document.getElementById('records-cards').innerHTML = recordCards.join('') || '<p class="muted">Not enough data yet.</p>';
+</script>
+
+</body>
+</html>

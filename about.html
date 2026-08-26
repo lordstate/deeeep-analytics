@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — Deeeep.io Analytics</title>
+<meta name="description" content="Rules, format and Elo methodology behind the Deeeep.io 1v1 Tournament and this site.">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Deeeep.io Analytics">
+<meta property="og:title" content="About — Deeeep.io Analytics">
+<meta property="og:description" content="Rules, format and Elo methodology behind the Deeeep.io 1v1 Tournament and this site.">
+<meta property="og:image" content="https://deeeep-analytics.netlify.app/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="About — Deeeep.io Analytics">
+<meta name="twitter:description" content="Rules, format and Elo methodology behind the Deeeep.io 1v1 Tournament and this site.">
+<meta name="twitter:image" content="https://deeeep-analytics.netlify.app/og-image.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="brand"><span class="glow-dot"></span> DEEEEP.IO ANALYTICS</div>
+  <nav class="top-nav">
+    <a href="index.html" data-page="home">Tournaments</a>
+    <a href="leaderboard.html" data-page="leaderboard">Elo Leaderboard</a>
+    <a href="stats.html" data-page="stats">Stats &amp; Records</a>
+    <a href="compare.html" data-page="compare">Compare</a>
+    <a href="live-map.html" data-page="live-map">Live Map</a>
+    <a href="card-game.html" data-page="card-game">Card Game</a>
+    <a href="championship.html" data-page="championship">Championship <span class="beta-pill">BETA</span></a>
+    <a href="about.html" data-page="about">About</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero" style="padding-top:48px;">
+    <div class="eyebrow">Rules & methodology</div>
+    <h1>How the tournaments and the rating work.</h1>
+  </section>
+
+  <div class="about-block">
+    <h3>Format</h3>
+    <p>Every Deeeep.io 1v1 Tournament is played as a single-elimination bracket — lose once and you're out. Every match is Best of 5 (first to 3 game wins), so a match can end 3-0, 3-1, or 3-2. There are no group stages and no third-place playoff.</p>
+  </div>
+
+  <div class="about-block">
+    <h3>The three editions</h3>
+    <ul>
+      <li><b>2023</b> — the first edition, around 38 players.</li>
+      <li><b>2024</b> — grew to over 70 players, with an added Qualifications round.</li>
+      <li><b>2026</b> — the biggest Deeeep.io 1v1 tournament ever run, with 256 players.</li>
+    </ul>
+  </div>
+
+  <div class="about-block">
+    <h3>The Elo rating system</h3>
+    <p>Ratings follow the classic chess Elo formula. Every player starts at <b>800</b>. After each match, both players' ratings shift based on the result and on how surprising it was:</p>
+    <ul>
+      <li>Beating a higher-rated opponent gains you more points than beating a lower-rated one.</li>
+      <li>The rating change uses a fixed <b>K-factor of 32</b> for every player, regardless of experience.</li>
+      <li>The scoreline (3-0 vs 3-2) has no effect on the rating change — a win is a win.</li>
+      <li>There are no draws, so every match produces a clear rating shift.</li>
+      <li>Byes don't affect anyone's rating.</li>
+    </ul>
+    <p>Ratings carry over between editions: your 2024 starting rating is exactly your rating at the end of 2023 (or 800 if it's your first tournament). Matches are replayed in strict chronological order — 2023 first, then 2024, then 2026, round by round — so the whole rating history is a faithful reconstruction of how the community's skill picture evolved.</p>
+    <p>To keep upsets from being too punishing — and to add a touch of gentle rating inflation over time, similar to Clash Royale's trophy system — <b>losers only lose 90% of the standard Elo calculation</b>, while winners still gain the full amount.</p>
+  </div>
+
+  <div class="about-block">
+    <h3>Try it yourself</h3>
+    <p>Enter two ratings to see the win probability and expected Elo swing for each player.</p>
+    <div class="compare-pick" style="grid-template-columns: 1fr auto 1fr; max-width:500px;">
+      <input type="number" id="sim-a" value="1000" class="sim-input">
+      <div class="vs">VS</div>
+      <input type="number" id="sim-b" value="1000" class="sim-input">
+    </div>
+    <div id="sim-result" style="margin-top:16px;"></div>
+  </div>
+
+  <div class="about-block">
+    <h3>Round dates</h3>
+    <p>Exact per-match timestamps aren't available from the bracket exports, so round dates shown on the site are estimated: each tournament is assumed to start in the summer of its year, with one round played per week.</p>
+  </div>
+
+  <div class="about-block">
+    <h3>Sources</h3>
+    <p>All results are sourced from the official Challonge brackets for each tournament. Direct links to the original brackets are available on each tournament page.</p>
+  </div>
+  <div class="about-block">
+    <h3>Community</h3>
+    <p>This site is run by the Deeeep.io Europe Staff, owned by LordState. Join the official Deeeep.io Europe Discord server to follow future tournaments, get involved, and discuss results with other competitors: <a href="https://discord.gg/UAFnRKsabe" id="discord-link-about" target="_blank" rel="noopener" style="color:var(--bio-teal); font-weight:600;">Join the Discord →</a></p>
+  </div>
+
+</main>
+
+<footer>Questions or corrections about a result? Reach out to the tournament organizer. &nbsp;·&nbsp; Run by the Deeeep.io Europe Staff (owned by LordState) &nbsp;·&nbsp; <a href="https://discord.gg/UAFnRKsabe" id="discord-link" target="_blank" rel="noopener" style="color:var(--bio-teal);">Join our Discord</a></footer>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script>
+initBioField(document.body);
+initGlobalSearch();
+renderNav('about');
+
+function renderSim() {
+  const a = parseInt(document.getElementById('sim-a').value) || 800;
+  const b = parseInt(document.getElementById('sim-b').value) || 800;
+  const r = simulateElo(a, b);
+  document.getElementById('sim-result').innerHTML = `
+    <div class="compare-grid">
+      <div class="compare-box">
+        <div class="name">Player A (${a})</div>
+        <div class="metric"><span>Win probability</span><b>${r.winProbA}%</b></div>
+        <div class="metric"><span>If win</span><b>+${r.aGainOnWin}</b></div>
+        <div class="metric"><span>If lose</span><b>-${r.aLossOnLoss}</b></div>
+      </div>
+      <div class="compare-box">
+        <div class="name">Player B (${b})</div>
+        <div class="metric"><span>Win probability</span><b>${r.winProbB}%</b></div>
+        <div class="metric"><span>If win</span><b>+${r.bGainOnWin}</b></div>
+        <div class="metric"><span>If lose</span><b>-${r.bLossOnLoss}</b></div>
+      </div>
+    </div>
+  `;
+}
+document.getElementById('sim-a').addEventListener('input', renderSim);
+document.getElementById('sim-b').addEventListener('input', renderSim);
+renderSim();
+</script>
+
+</body>
+</html>
