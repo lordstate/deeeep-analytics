@@ -4,19 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Championship Beta — Deeeep.io Analytics</title>
-<meta name="description" content="The Deeeep.io Championship: 12 Monthly events, 5 regions, Championship Points, and a 16-player World Championship final. Launching next season.">
+<meta name="description" content="The Deeeep.io Championship: 12 Monthly events, 5 regions, Championship Points, a cash prize, and a 16-player World Championship final. Launching next season.">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Deeeep.io Analytics">
 <meta property="og:title" content="Championship Beta — Deeeep.io Analytics">
-<meta property="og:description" content="The Deeeep.io Championship: 12 Monthly events, 5 regions, Championship Points, and a 16-player World Championship final. Launching next season.">
+<meta property="og:description" content="The Deeeep.io Championship: 12 Monthly events, 5 regions, Championship Points, a cash prize, and a 16-player World Championship final. Launching next season.">
 <meta property="og:image" content="https://deeeep-analytics.netlify.app/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Championship Beta — Deeeep.io Analytics">
-<meta name="twitter:description" content="The Deeeep.io Championship: 12 Monthly events, 5 regions, Championship Points, and a 16-player World Championship final. Launching next season.">
+<meta name="twitter:description" content="The Deeeep.io Championship: 12 Monthly events, 5 regions, Championship Points, a cash prize, and a 16-player World Championship final. Launching next season.">
 <meta name="twitter:image" content="https://deeeep-analytics.netlify.app/og-image.png">
 <link rel="stylesheet" href="style.css">
 </head>
@@ -41,8 +41,13 @@
   <section class="hero" style="padding-top:48px;">
     <div class="eyebrow">Coming next season</div>
     <h1>The Deeeep.io Championship.</h1>
-    <p class="lead">A brand new, year-round format running alongside the existing Elo — independent from past tournaments, with its own season points and its own path to a 16-player World Championship. This page is a live beta: the rules below are final, the season hasn't started yet.</p>
+    <p class="lead">A brand new, year-round format running alongside the existing Elo — independent from past tournaments, with its own season points and its own path to a 16-player World Championship. This page explains how it will work; the season hasn't started yet, and registration will happen on our Discord, not on this site.</p>
   </section>
+
+  <div class="fact-card" style="margin-bottom:40px; border-color:#FFD166;">
+    <div class="fact-label" style="color:#FFD166;">💰 Cash prize</div>
+    <p>There's <b>over $100 in cash prizes</b> up for grabs, concentrated on the World Championship at the end of the season rather than split into small amounts every month. Exact details will be confirmed closer to launch — but the headline number is real.</p>
+  </div>
 
   <div class="about-block">
     <h3>How a season works</h3>
@@ -54,12 +59,18 @@
     </ul>
   </div>
 
+  <section>
+    <div class="section-head"><h2>A season, visually</h2></div>
+    <div id="season-diagram"></div>
+  </section>
+
   <div class="about-block">
-    <h3>Every month</h3>
+    <h3>Every month — and it's genuinely quick</h3>
     <ul>
-      <li>Registration opens, open to anyone — no fixed player count. 14, 34, or 267 sign-ups all work the same way.</li>
-      <li>Once registration closes, the site randomly pairs every player with <b>4 different opponents</b>, known from day one.</li>
-      <li>Maximum <b>1 match per week</b>, so the 4 matches spread across the month.</li>
+      <li>Sign-ups happen on our Discord — open to anyone, no fixed player count. 14, 34, or 267 sign-ups all work the same way.</li>
+      <li><b>You choose which months you take part in.</b> Nothing is mandatory. Know you're busy in March? Just skip it — you'll simply score 0 points that month, no penalty beyond that.</li>
+      <li>If you do join a given month, it's just <b>4 matches</b> against 4 different opponents, known from day one — nothing more. That's it.</li>
+      <li>Maximum <b>1 match per week</b>, so those 4 matches spread naturally across the month. This is designed on purpose to stay low-commitment: a few games spread out, not a demanding grind.</li>
     </ul>
   </div>
 
@@ -77,7 +88,7 @@
         </tbody>
       </table>
     </div>
-    <p>A month not played earns 0 points. Ties within a Monthly don't matter — several players can land on the same record and points. What matters is the <b>cumulative annual total</b> per region.</p>
+    <p>A month not played earns 0 points — there's no downside to sitting one out beyond missing that month's points. Ties within a Monthly don't matter — several players can land on the same record and points. What matters is the <b>cumulative annual total</b> per region.</p>
   </div>
 
   <div class="about-block">
@@ -90,97 +101,56 @@
       <li><b>Top 2</b> — OCE</li>
       <li><b>Top 2</b> — SA</li>
     </ul>
-    <p>The exact finals format is still being finalized. A cash prize is under discussion, most likely concentrated on the World Championship rather than spread thin across regions every month.</p>
+    <p>The exact finals format is still being finalized.</p>
   </div>
 
   <div class="about-block">
-    <h3>⚠️ About this beta tool</h3>
-    <p>Everything below (registrations, matchmaking, results, standings) runs entirely in your browser via local storage — there's no account system and no shared server, consistent with the rest of this site. It's built as a working commissioner tool for testing the format before the season goes live. Data stays on this device only.</p>
+    <h3>Where to sign up</h3>
+    <p>All registration, matchmaking announcements and results happen on the official Deeeep.io Europe Discord — this page is here purely to explain the format ahead of launch: <a href="https://discord.gg/UAFnRKsabe" target="_blank" rel="noopener" style="color:var(--bio-teal); font-weight:600;">Join the Discord →</a></p>
   </div>
-
-  <section>
-    <div class="section-head"><h2>Season setup</h2></div>
-    <div class="champ-controls">
-      <label>Season year <input type="number" id="cc-year" value="2027" class="sim-input" style="width:100px;"></label>
-      <label>Region
-        <select id="cc-region" class="sim-input">
-          <option value="EU">EU</option>
-          <option value="NA">NA</option>
-          <option value="AS">AS</option>
-          <option value="OCE">OCE</option>
-          <option value="SA">SA</option>
-        </select>
-      </label>
-      <label>Month
-        <select id="cc-month" class="sim-input"></select>
-      </label>
-    </div>
-  </section>
-
-  <section>
-    <div class="section-head"><h2>1. Registrations</h2></div>
-    <p class="muted" style="font-size:13px; margin-bottom:10px;">One pseudo per line. Saved per region + month.</p>
-    <textarea id="cc-registrations" class="cc-textarea" rows="6" placeholder="PlayerOne&#10;PlayerTwo&#10;PlayerThree..."></textarea>
-    <div style="margin-top:10px;">
-      <button class="btn-primary" id="cc-save-reg">Save registrations</button>
-      <span class="muted" id="cc-reg-count" style="margin-left:12px; font-size:13px;"></span>
-    </div>
-  </section>
-
-  <section>
-    <div class="section-head"><h2>2. Matchmaking</h2></div>
-    <button class="btn-primary" id="cc-generate">Generate matchmaking</button>
-    <div id="cc-matchmaking" style="margin-top:20px;"></div>
-  </section>
-
-  <section>
-    <div class="section-head"><h2>3. Results</h2></div>
-    <div id="cc-results-form"></div>
-  </section>
-
-  <section>
-    <div class="section-head"><h2>Season standings</h2></div>
-    <div class="champ-controls">
-      <label>Region
-        <select id="standings-region" class="sim-input">
-          <option value="EU">EU</option>
-          <option value="NA">NA</option>
-          <option value="AS">AS</option>
-          <option value="OCE">OCE</option>
-          <option value="SA">SA</option>
-        </select>
-      </label>
-    </div>
-    <div class="table-wrap" style="margin-bottom:40px;">
-      <table class="classement">
-        <thead><tr><th>#</th><th>Player</th><th>Months played</th><th>Points</th></tr></thead>
-        <tbody id="standings-rows"></tbody>
-      </table>
-    </div>
-    <p class="muted" style="font-size:12px;">Rows above the line qualify for the World Championship at season's end.</p>
-  </section>
-
-  <section>
-    <div class="section-head"><h2>World Championship qualifiers (live preview)</h2></div>
-    <div class="table-wrap" style="margin-bottom:40px;">
-      <table class="classement">
-        <thead><tr><th>Region</th><th>Player</th><th>Points</th></tr></thead>
-        <tbody id="qualifiers-rows"></tbody>
-      </table>
-    </div>
-  </section>
 </main>
 
-<footer>Beta system — rules final, season not yet live &nbsp;·&nbsp; Run by the Deeeep.io Europe Staff (owned by LordState) &nbsp;·&nbsp; <a href="https://discord.gg/UAFnRKsabe" target="_blank" rel="noopener" style="color:var(--bio-teal);">Join our Discord</a></footer>
+<footer>Beta explainer — rules final, season not yet live &nbsp;·&nbsp; Run by the Deeeep.io Europe Staff (owned by LordState) &nbsp;·&nbsp; <a href="https://discord.gg/UAFnRKsabe" target="_blank" rel="noopener" style="color:var(--bio-teal);">Join our Discord</a></footer>
 
 <script src="data.js"></script>
 <script src="app.js"></script>
-<script src="championship.js"></script>
 <script>
 initBioField(document.body);
 initGlobalSearch();
 renderNav('championship');
-initChampionship();
+
+// ---- Season diagram: 12 months, each showing the optional 4-match / 4-week flow ----
+function renderSeasonDiagram() {
+  const el = document.getElementById('season-diagram');
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const playedExample = new Set([0,1,3,4,5,7,8,10,11]); // illustrative: a player who skipped Mar, Jul(idx6), Sep... just a visual example
+
+  el.innerHTML = `
+    <div class="season-diagram-card">
+      <div class="season-diagram-legend">
+        <span><span class="sd-dot sd-played"></span> Month played (4 matches, 1/week)</span>
+        <span><span class="sd-dot sd-skipped"></span> Month skipped (0 points, no penalty)</span>
+      </div>
+      <div class="season-track">
+        ${months.map((m, i) => `
+          <div class="season-month ${playedExample.has(i) ? 'played' : 'skipped'}">
+            <div class="season-month-label">${m}</div>
+            ${playedExample.has(i)
+              ? `<div class="season-weeks">${[1,2,3,4].map(w => `<div class="season-week-dot" title="Week ${w}: 1 match"></div>`).join('')}</div>`
+              : `<div class="season-weeks skipped-weeks">—</div>`}
+          </div>
+        `).join('')}
+      </div>
+      <div class="season-arrow-row">
+        <span>12 months →</span>
+        <span>Championship Points accumulate per region →</span>
+        <span>Top of each region qualifies →</span>
+        <span><b style="color:var(--bio-amber);">World Championship (16 players)</b></span>
+      </div>
+    </div>
+  `;
+}
+renderSeasonDiagram();
 </script>
 
 </body>

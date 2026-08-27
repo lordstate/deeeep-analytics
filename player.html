@@ -89,6 +89,7 @@ if (!p) {
         ${p.countryName ? `<span>${p.countryName}</span>` : ''}
       </div>
       ${p.aka ? `<div class="aka-note">Also known as <a href="player.html?pseudo=${encodeURIComponent(p.aka)}">${p.aka}</a> — same person, separate account entry kept for bracket accuracy.</div>` : ''}
+      <a class="challonge-link" style="margin-top:12px;" href="https://deeeep.io/u/${encodeURIComponent(p.pseudo.toLowerCase())}" target="_blank" rel="noopener">View in-game profile ↗</a>
     </div>
   `;
 
