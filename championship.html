@@ -27,14 +27,13 @@
   <nav class="top-nav">
     <a href="index.html" data-page="home">Tournaments</a>
     <a href="leaderboard.html" data-page="leaderboard">Elo Leaderboard</a>
-    <a href="stats.html" data-page="stats">Stats</a>
-    <a href="compare.html" data-page="compare">Compare</a>
-    <a href="records.html" data-page="records">Records</a>
+    <a href="stats.html" data-page="stats">Stats &amp; Records</a>
     <a href="live-map.html" data-page="live-map">Live Map</a>
     <a href="card-game.html" data-page="card-game">Card Game</a>
     <a href="championship.html" data-page="championship">Championship <span class="beta-pill">BETA</span></a>
     <a href="about.html" data-page="about">About</a>
   </nav>
+</header>
 </header>
 
 <main>
@@ -60,7 +59,8 @@
   </div>
 
   <section>
-    <div class="section-head"><h2>A season, visually</h2></div>
+    <div class="section-head"><h2>A season, from one player's point of view</h2></div>
+    <p class="lead" style="font-size:14px; margin-bottom:20px;">Example below: a single player's choices across the year — playing most months, skipping a few when busy.</p>
     <div id="season-diagram"></div>
   </section>
 
@@ -110,7 +110,7 @@
   </div>
 </main>
 
-<footer>Beta explainer — rules final, season not yet live &nbsp;·&nbsp; Run by the Deeeep.io Europe Staff (owned by LordState) &nbsp;·&nbsp; <a href="https://discord.gg/UAFnRKsabe" target="_blank" rel="noopener" style="color:var(--bio-teal);">Join our Discord</a></footer>
+<footer><img src="game-icons.png" alt="" style="height:22px; opacity:0.5; vertical-align:middle; margin-right:10px;">Beta explainer — rules final, season not yet live &nbsp;·&nbsp; Run by the Deeeep.io Europe Staff (owned by LordState) &nbsp;·&nbsp; <a href="https://discord.gg/UAFnRKsabe" target="_blank" rel="noopener" style="color:var(--bio-teal);">Join our Discord</a></footer>
 
 <script src="data.js"></script>
 <script src="app.js"></script>
@@ -127,9 +127,10 @@ function renderSeasonDiagram() {
 
   el.innerHTML = `
     <div class="season-diagram-card">
+      <div class="season-diagram-title">One example player's calendar</div>
       <div class="season-diagram-legend">
-        <span><span class="sd-dot sd-played"></span> Month played (4 matches, 1/week)</span>
-        <span><span class="sd-dot sd-skipped"></span> Month skipped (0 points, no penalty)</span>
+        <span><span class="sd-dot sd-played"></span> Month played (this player's 4 matches, 1/week)</span>
+        <span><span class="sd-dot sd-skipped"></span> Month skipped by this player (0 points, no penalty)</span>
       </div>
       <div class="season-track">
         ${months.map((m, i) => `
@@ -142,8 +143,8 @@ function renderSeasonDiagram() {
         `).join('')}
       </div>
       <div class="season-arrow-row">
-        <span>12 months →</span>
-        <span>Championship Points accumulate per region →</span>
+        <span>This player's 12 months →</span>
+        <span>Their points add to the regional standings →</span>
         <span>Top of each region qualifies →</span>
         <span><b style="color:var(--bio-amber);">World Championship (16 players)</b></span>
       </div>

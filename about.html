@@ -28,7 +28,6 @@
     <a href="index.html" data-page="home">Tournaments</a>
     <a href="leaderboard.html" data-page="leaderboard">Elo Leaderboard</a>
     <a href="stats.html" data-page="stats">Stats &amp; Records</a>
-    <a href="compare.html" data-page="compare">Compare</a>
     <a href="live-map.html" data-page="live-map">Live Map</a>
     <a href="card-game.html" data-page="card-game">Card Game</a>
     <a href="championship.html" data-page="championship">Championship <span class="beta-pill">BETA</span></a>
@@ -71,6 +70,18 @@
   </div>
 
   <div class="about-block">
+    <h3>Compare players</h3>
+    <p>Pick any two competitors to see how they stack up — and whether they've ever crossed paths in the bracket.</p>
+    <div class="compare-pick">
+      <select id="p1"></select>
+      <div class="vs">VS</div>
+      <select id="p2"></select>
+    </div>
+    <div class="compare-grid" id="compare-grid"></div>
+    <div id="h2h-section"></div>
+  </div>
+
+  <div class="about-block">
     <h3>Try it yourself</h3>
     <p>Enter two ratings to see the win probability and expected Elo swing for each player.</p>
     <div class="compare-pick" style="grid-template-columns: 1fr auto 1fr; max-width:500px;">
@@ -97,7 +108,7 @@
 
 </main>
 
-<footer>Questions or corrections about a result? Reach out to the tournament organizer. &nbsp;·&nbsp; Run by the Deeeep.io Europe Staff (owned by LordState) &nbsp;·&nbsp; <a href="https://discord.gg/UAFnRKsabe" id="discord-link" target="_blank" rel="noopener" style="color:var(--bio-teal);">Join our Discord</a></footer>
+<footer><img src="game-icons.png" alt="" style="height:22px; opacity:0.5; vertical-align:middle; margin-right:10px;">Questions or corrections about a result? Reach out to the tournament organizer. &nbsp;·&nbsp; Run by the Deeeep.io Europe Staff (owned by LordState) &nbsp;·&nbsp; <a href="https://discord.gg/UAFnRKsabe" id="discord-link" target="_blank" rel="noopener" style="color:var(--bio-teal);">Join our Discord</a></footer>
 
 <script src="data.js"></script>
 <script src="app.js"></script>
@@ -105,6 +116,78 @@
 initBioField(document.body);
 initGlobalSearch();
 renderNav('about');
+
+// ---- Compare players (merged in from the former standalone Compare page) ----
+const sortedPlayers = [...SITE_DATA.players].sort((a,b) => a.pseudo.localeCompare(b.pseudo));
+const compareOpts = sortedPlayers.map(p => `<option value="${p.pseudo}">${p.pseudo} (#${p.rank})</option>`).join('');
+document.getElementById('p1').innerHTML = compareOpts;
+document.getElementById('p2').innerHTML = compareOpts;
+document.getElementById('p1').value = sortedPlayers[0]?.pseudo;
+document.getElementById('p2').value = sortedPlayers[1]?.pseudo;
+
+function metricRow(label, v1, v2, higherIsBetter = true) {
+  const b1 = higherIsBetter ? v1 >= v2 : v1 <= v2;
+  const b2 = higherIsBetter ? v2 >= v1 : v2 <= v1;
+  return [
+    `<div class="metric ${b1 && v1 !== v2 ? 'better' : ''}"><span>${label}</span><b>${v1}</b></div>`,
+    `<div class="metric ${b2 && v1 !== v2 ? 'better' : ''}"><span>${label}</span><b>${v2}</b></div>`,
+  ];
+}
+
+function renderCompare() {
+  const a = playerBySlug(document.getElementById('p1').value);
+  const b = playerBySlug(document.getElementById('p2').value);
+  if (!a || !b) return;
+
+  const rows = [
+    metricRow('Current Elo', a.currentElo, b.currentElo),
+    metricRow('Peak Elo', a.peakElo, b.peakElo),
+    metricRow('Win rate', a.winrate + '%', b.winrate + '%'),
+    metricRow('Wins', a.wins, b.wins),
+    metricRow('Losses', a.losses, b.losses, false),
+    metricRow('Best win streak', a.bestWinStreak, b.bestWinStreak),
+    metricRow('Tournaments played', a.tournamentsPlayed, b.tournamentsPlayed),
+    metricRow('Giant kills', a.giantKills, b.giantKills),
+  ];
+
+  document.getElementById('compare-grid').innerHTML = `
+    <div class="compare-box">
+      <div class="name"><a href="player.html?pseudo=${encodeURIComponent(a.pseudo)}">${a.pseudo}</a></div>
+      ${rows.map(r => r[0]).join('')}
+      ${badgeHTML(a.badges)}
+    </div>
+    <div class="compare-box">
+      <div class="name"><a href="player.html?pseudo=${encodeURIComponent(b.pseudo)}">${b.pseudo}</a></div>
+      ${rows.map(r => r[1]).join('')}
+      ${badgeHTML(b.badges)}
+    </div>
+  `;
+
+  const key1 = `${a.pseudo}|${b.pseudo}`;
+  const key2 = `${b.pseudo}|${a.pseudo}`;
+  const h2h = SITE_DATA.rematches[key1] || SITE_DATA.rematches[key2];
+  const h2hEl = document.getElementById('h2h-section');
+  if (h2h) {
+    h2hEl.innerHTML = `
+      <div class="history-list">
+        ${h2h.map(m => `
+          <div class="match-card">
+            <div class="row ${m.winner === a.pseudo ? 'winner' : ''}"><span class="name">${a.pseudo}</span><span class="score">${m.j1 === a.pseudo ? m.score.split('-')[0] : m.score.split('-')[1]}</span></div>
+            <div class="row ${m.winner === b.pseudo ? 'winner' : ''}"><span class="name">${b.pseudo}</span><span class="score">${m.j1 === b.pseudo ? m.score.split('-')[0] : m.score.split('-')[1]}</span></div>
+            <div class="row" style="padding-top:0;"><span class="muted" style="font-size:12px;">${m.tournament} · ${m.round}</span></div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  } else {
+    h2hEl.innerHTML = `<p class="muted">These two haven't faced each other more than once (or ever) across the tracked editions.</p>`;
+  }
+}
+document.getElementById('p1').addEventListener('change', renderCompare);
+document.getElementById('p2').addEventListener('change', renderCompare);
+renderCompare();
+
+// ---- Elo simulator ----
 
 function renderSim() {
   const a = parseInt(document.getElementById('sim-a').value) || 800;

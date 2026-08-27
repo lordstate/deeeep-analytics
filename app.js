@@ -100,15 +100,35 @@ function renderNav(active) {
 }
 
 // ===== Global search (header) =====
-// Search removed site-wide: initGlobalSearch is a no-op that also removes any existing search UI.
 function initGlobalSearch() {
-  try {
-    const existing = document.querySelector('.search-wrap');
-    if (existing && existing.parentElement) existing.parentElement.removeChild(existing);
-  } catch (e) {
-    // noop
-  }
-  return;
+  const wrap = document.createElement('div');
+  wrap.className = 'search-wrap';
+  wrap.innerHTML = `<input type="text" id="global-search" placeholder="Search players or tournaments…" autocomplete="off">
+    <div class="search-results" id="global-search-results"></div>`;
+  const nav = document.querySelector('nav.top-nav');
+  nav.parentElement.insertBefore(wrap, nav.nextSibling);
+
+  const input = document.getElementById('global-search');
+  const results = document.getElementById('global-search-results');
+
+  input.addEventListener('input', () => {
+    const q = input.value.trim().toLowerCase();
+    if (q.length < 1) { results.classList.remove('open'); results.innerHTML = ''; return; }
+    const playerMatches = SITE_DATA.players.filter(p => p.pseudo.toLowerCase().includes(q)).slice(0, 6);
+    const tMatches = SITE_DATA.tournaments.filter(t => t.name.toLowerCase().includes(q) || t.year.includes(q));
+    let html = '';
+    tMatches.forEach(t => {
+      html += `<a href="tournament.html?slug=${t.slug}">${t.name}<span class="tag">tournament</span></a>`;
+    });
+    playerMatches.forEach(p => {
+      html += `<a href="player.html?pseudo=${encodeURIComponent(p.pseudo)}">${p.pseudo}<span class="tag">#${p.rank} · ${p.currentElo} elo</span></a>`;
+    });
+    results.innerHTML = html || '<a style="color:var(--text-faint)">No results</a>';
+    results.classList.add('open');
+  });
+  document.addEventListener('click', (e) => {
+    if (!wrap.contains(e.target)) results.classList.remove('open');
+  });
 }
 
 // ===== Badges =====
