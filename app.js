@@ -100,8 +100,7 @@ function renderNav(active) {
 }
 
 // ===== Global search (header) =====
-// Search removed site-wide. initGlobalSearch is kept as a stub so existing page calls
-// remain valid; it will remove any previously injected search UI if present.
+// Search removed site-wide: initGlobalSearch is a no-op that also removes any existing search UI.
 function initGlobalSearch() {
   try {
     const existing = document.querySelector('.search-wrap');
