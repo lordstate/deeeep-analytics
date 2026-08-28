@@ -528,6 +528,9 @@ footer {
 .sd-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
 .sd-dot.sd-played { background: var(--bio-teal); }
 .sd-dot.sd-skipped { background: var(--text-faint); }
+.sd-dot.sd-final { background: var(--bio-amber); }
+.season-month.final { border-color: var(--bio-amber); background: rgba(255,180,84,0.06); }
+.final-weeks { color: var(--bio-amber); font-family: var(--font-mono); font-size: 12px; font-weight: 600; }
 .season-track { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-bottom: 24px; }
 .season-month {
   border: 1px solid var(--border); border-radius: 8px; padding: 10px 8px; text-align: center;
