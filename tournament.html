@@ -25,7 +25,8 @@
 <header class="top">
   <div class="brand"><span class="glow-dot"></span> DEEEEP.IO ANALYTICS</div>
   <nav class="top-nav">
-    <a href="index.html" data-page="home">Tournaments</a>
+    <a href="index.html" data-page="home">Home</a>
+    <a href="tournaments.html" data-page="tournaments">Tournaments</a>
     <a href="leaderboard.html" data-page="leaderboard">Elo Leaderboard</a>
     <a href="stats.html" data-page="stats">Stats &amp; Records</a>
     <a href="live-map.html" data-page="live-map">Live Map</a>
@@ -37,7 +38,7 @@
 
 <main>
   <div class="t-header">
-    <a href="index.html" class="back-link">← All tournaments</a>
+    <a href="tournaments.html" class="back-link">← All tournaments</a>
     <h1 id="t-title"></h1>
     <div class="meta" id="t-meta"></div>
     <a id="challonge-link" class="challonge-link" target="_blank" rel="noopener" style="display:none;">View original bracket on Challonge ↗</a>
@@ -63,7 +64,7 @@
 <script>
 initBioField(document.body);
 initGlobalSearch();
-renderNav('home');
+renderNav('tournaments');
 
 const slug = qs('slug');
 const t = SITE_DATA.tournaments.find(x => x.slug === slug);

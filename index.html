@@ -4,19 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Deeeep.io Analytics — Tournaments, Elo & Stats</title>
-<meta name="description" content="Official results, Elo rankings and stats for the Deeeep.io 1v1 Tournament — 2023, 2024, and the 256-player 2026 edition.">
+<meta name="description" content="The home for competitive Deeeep.io 1v1: tournament brackets, Elo rankings, live community map, and the upcoming Championship — all in one place.">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Deeeep.io Analytics">
 <meta property="og:title" content="Deeeep.io Analytics — Tournaments, Elo & Stats">
-<meta property="og:description" content="Official results, Elo rankings and stats for the Deeeep.io 1v1 Tournament — 2023, 2024, and the 256-player 2026 edition.">
+<meta property="og:description" content="The home for competitive Deeeep.io 1v1: tournament brackets, Elo rankings, live community map, and the upcoming Championship — all in one place.">
 <meta property="og:image" content="https://deeeep-analytics.netlify.app/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Deeeep.io Analytics — Tournaments, Elo & Stats">
-<meta name="twitter:description" content="Official results, Elo rankings and stats for the Deeeep.io 1v1 Tournament — 2023, 2024, and the 256-player 2026 edition.">
+<meta name="twitter:description" content="The home for competitive Deeeep.io 1v1: tournament brackets, Elo rankings, live community map, and the upcoming Championship — all in one place.">
 <meta name="twitter:image" content="https://deeeep-analytics.netlify.app/og-image.png">
 <link rel="stylesheet" href="style.css">
 </head>
@@ -25,7 +25,8 @@
 <header class="top">
   <div class="brand"><span class="glow-dot"></span> DEEEEP.IO ANALYTICS</div>
   <nav class="top-nav">
-    <a href="index.html" data-page="home">Tournaments</a>
+    <a href="index.html" data-page="home">Home</a>
+    <a href="tournaments.html" data-page="tournaments">Tournaments</a>
     <a href="leaderboard.html" data-page="leaderboard">Elo Leaderboard</a>
     <a href="stats.html" data-page="stats">Stats &amp; Records</a>
     <a href="live-map.html" data-page="live-map">Live Map</a>
@@ -37,35 +38,36 @@
 
 <main>
   <section class="hero">
-    <div class="eyebrow">Official 1v1 competitions</div>
-    <h1>The full history of Deeeep.io tournaments, round by round.</h1>
-    <p class="lead">Three editions, one shared Elo rating that evolves with every match. Every tournament is single elimination, best of 5.</p>
+    <div class="eyebrow">Deeeep.io Europe · Official 1v1 competitions</div>
+    <h1>Everything about competitive Deeeep.io, in one place.</h1>
+    <p class="lead">This site tracks every official Deeeep.io 1v1 Tournament — brackets, results, and a shared Elo rating that follows every player across editions. New here? Here's the quick tour.</p>
+  </section>
+
+  <section>
+    <div class="stat-grid" id="home-stats"></div>
   </section>
 
   <section>
     <div class="section-head">
-      <h2>2026 hype trailer</h2>
-      <span class="count">🏆 Biggest edition to date</span>
+      <h2>Where to go</h2>
+      <span class="count">Pick a section</span>
     </div>
-    <p class="lead" style="font-size:14px; margin-bottom:20px;">The biggest Deeeep.io 1v1 Tournament to date — watch the official hype trailer released before the 2026 edition kicked off.</p>
-    <div class="video-wrap">
-      <video controls preload="metadata" poster="video-poster.jpg" playsinline>
-        <source src="2026-hype-trailer.mp4" type="video/mp4">
-        Your browser doesn't support embedded video — <a href="2026-hype-trailer.mp4">download the trailer</a> instead.
-      </video>
-    </div>
+    <div class="t-grid" id="nav-grid"></div>
   </section>
 
   <section>
-    <div class="section-head">
-      <h2>Tournaments</h2>
-      <span class="count" id="t-count"></span>
+    <div class="about-block" style="border: 1px solid var(--border); background: var(--deep); border-radius: 12px; padding: 24px 28px;">
+      <h3 style="margin-top:0;">New here? Start with this</h3>
+      <p style="margin-bottom:0;">
+        1. Browse the <a href="tournaments.html" style="color:var(--bio-teal);">Tournaments</a> to see how each edition played out, round by round.<br>
+        2. Check the <a href="leaderboard.html" style="color:var(--bio-teal);">Elo Leaderboard</a> to see who's rated highest right now.<br>
+        3. Curious how the rating works? It's all explained on <a href="about.html" style="color:var(--bio-teal);">About</a>.
+      </p>
     </div>
-    <div class="t-grid" id="t-grid"></div>
   </section>
 </main>
 
-<footer><img src="game-icons.png" alt="" style="height:22px; opacity:0.5; vertical-align:middle; margin-right:10px;">Results sourced from Challonge · Elo ratings computed from the full match history &nbsp;·&nbsp; Run by the Deeeep.io Europe Staff (owned by LordState) &nbsp;·&nbsp; <a href="https://discord.gg/UAFnRKsabe" id="discord-link" target="_blank" rel="noopener" style="color:var(--bio-teal);">Join our Discord</a></footer>
+<footer><img src="game-icons.png" alt="" style="height:22px; opacity:0.5; vertical-align:middle; margin-right:10px;">Results sourced from Challonge · Elo ratings computed from the full match history &nbsp;·&nbsp; Run by the Deeeep.io Europe Staff (owned by LordState) &nbsp;·&nbsp; <a href="https://discord.gg/UAFnRKsabe" target="_blank" rel="noopener" style="color:var(--bio-teal);">Join our Discord</a></footer>
 
 <script src="data.js"></script>
 <script src="app.js"></script>
@@ -74,26 +76,30 @@ initBioField(document.body);
 initGlobalSearch();
 renderNav('home');
 
-const grid = document.getElementById('t-grid');
-document.getElementById('t-count').textContent = SITE_DATA.tournaments.length + ' tournaments';
+const gs = SITE_DATA.globalStats;
+document.getElementById('home-stats').innerHTML = `
+  <div class="stat-box"><div class="label">Tournaments</div><div class="value">${gs.totalTournaments}</div><div class="sub">2023 · 2024 · 2026</div></div>
+  <div class="stat-box"><div class="label">Players tracked</div><div class="value">${gs.totalPlayers}</div><div class="sub">across all editions</div></div>
+  <div class="stat-box"><div class="label">Matches played</div><div class="value">${gs.totalMatches}</div><div class="sub">and counting</div></div>
+`;
 
-SITE_DATA.tournaments.forEach(t => {
-  const isLive = t.status === 'Ongoing';
-  const card = document.createElement('a');
-  card.href = `tournament.html?slug=${t.slug}`;
-  card.className = 't-card';
-  card.innerHTML = `
-    <div class="year">${t.year}</div>
-    <h3>${t.name}</h3>
-    <div class="stats">
-      <div><b>${t.players}</b> players</div>
-      <div><b>${t.matchesPlayed}</b> matches played</div>
-    </div>
-    <span class="status-pill ${isLive ? 'live' : 'done'}">${isLive ? 'Ongoing' : 'Completed'}</span>
-    <div class="cta">View tournament →</div>
-  `;
-  grid.appendChild(card);
-});
+const sections = [
+  { href: 'tournaments.html', title: 'Tournaments', desc: 'Full brackets and round-by-round results for every edition.', tag: '3 editions' },
+  { href: 'leaderboard.html', title: 'Elo Leaderboard', desc: 'Every player, ranked by rating, with win rate and streaks.', tag: `${gs.totalPlayers} players` },
+  { href: 'stats.html', title: 'Stats & Records', desc: 'Community highlights, records, and cross-tournament comparisons.', tag: 'Fun facts inside' },
+  { href: 'live-map.html', title: 'Live Map', desc: 'Where the competitive community lives, mapped around the world.', tag: `${SITE_DATA.countryStats.length} countries` },
+  { href: 'card-game.html', title: 'Card Game', desc: 'Guess real match results and collect player cards.', tag: 'Play now' },
+  { href: 'championship.html', title: 'Championship', desc: 'A brand new year-round format — regions, monthly points, a cash prize.', tag: 'Coming next season' },
+];
+
+document.getElementById('nav-grid').innerHTML = sections.map(s => `
+  <a href="${s.href}" class="t-card">
+    <div class="year">${s.tag}</div>
+    <h3>${s.title}</h3>
+    <p class="stats" style="display:block; margin-bottom:16px;">${s.desc}</p>
+    <div class="cta">Open →</div>
+  </a>
+`).join('');
 </script>
 
 </body>
