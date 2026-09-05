@@ -142,6 +142,7 @@ function badgeHTML(badges) {
 
 // ===== Mini bracket path (per tournament, W/L pills) =====
 function renderPlayerPaths(container, pseudo) {
+  const player = playerBySlug(pseudo);
   const rows = SITE_DATA.tournaments.map(t => {
     const rounds = SITE_DATA.matchesByTournament[t.slug] || [];
     const played = [];
@@ -154,7 +155,22 @@ function renderPlayerPaths(container, pseudo) {
     });
     if (played.length === 0) return '';
     const dots = played.map(p => `<span class="path-dot ${p.won ? 'win' : 'loss'}" title="${p.round}">${p.won ? 'W' : 'L'}</span>`).join('');
-    return `<div class="path-row"><span class="path-tname">${t.year}</span><div class="path-dots">${dots}</div></div>`;
+
+    const placement = player && player.placements && player.placements[t.slug];
+    let resultBadge;
+    if (placement) {
+      const isChampion = placement.label === 'Champion';
+      resultBadge = `<span class="badge ${isChampion ? 'gold' : ''}" style="margin-left:auto;">${isChampion ? '\u{1F3C6} ' : ''}${placement.label}${placement.tied ? ` <span style="opacity:.6;">(tied, ${placement.countTied})</span>` : ''}</span>`;
+    } else if (t.status === 'Ongoing') {
+      const lastMatch = played[played.length - 1];
+      resultBadge = lastMatch.won
+        ? `<span class="badge" style="margin-left:auto;">Still in it</span>`
+        : `<span class="badge" style="margin-left:auto; opacity:.7;">Eliminated — ${lastMatch.round}</span>`;
+    } else {
+      resultBadge = '';
+    }
+
+    return `<div class="path-row"><span class="path-tname">${t.year}</span><div class="path-dots">${dots}</div>${resultBadge}</div>`;
   }).join('');
   container.innerHTML = rows || '<p class="muted">No tournament path yet.</p>';
 }
