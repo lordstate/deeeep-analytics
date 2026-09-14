@@ -150,7 +150,7 @@ function renderCountryBoard() {
   document.getElementById('country-rows').innerHTML = list.map((p, i) => `
     <tr>
       <td class="rank">${i+1}</td>
-      <td><a href="player.html?pseudo=${encodeURIComponent(p.pseudo)}" class="player-cell">${avatarHTML(p)}<span>${p.pseudo}</span></a></td>
+      <td><a href="player.html?pseudo=${encodeURIComponent(p.pseudo)}" class="player-cell">${avatarHTML(p)}<span>${p.pseudo}${fpFlag(p)}</span></a></td>
       <td class="elo-val">${p.currentElo}</td>
       <td class="muted">${p.tournamentsPlayed}</td>
     </tr>
@@ -167,7 +167,7 @@ function renderCountryTable() {
       <td style="text-align:left; display:flex; align-items:center; gap:8px;">${countryFlag(c.code)} ${c.name}</td>
       <td>${c.playerCount}</td>
       <td>${c.avgElo}</td>
-      <td><a href="player.html?pseudo=${encodeURIComponent(c.topPlayer)}">${c.topPlayer}</a> (${c.topPlayerElo})</td>
+      <td><a href="player.html?pseudo=${encodeURIComponent(c.topPlayer)}">${c.topPlayer}</a>${fpFlag(c.topPlayer)} (${c.topPlayerElo})</td>
       <td>${c.tournamentWins}</td>
     </tr>
   `).join('');

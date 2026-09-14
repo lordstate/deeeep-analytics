@@ -105,13 +105,13 @@ function renderWinnerQuestion(played) {
     <div class="guess-sub">${match.tournamentName} · ${match.round}</div>
     <div class="guess-q-label" style="text-align:center; margin:18px 0 14px;">Who won this match?</div>
     <div class="guess-vs">
-      <div class="guess-player">${p1 ? avatarHTML(p1) : ''}<div class="guess-pname">${match.j1}</div></div>
+      <div class="guess-player">${p1 ? avatarHTML(p1) : ''}<div class="guess-pname">${match.j1}${fpFlag(match.j1)}</div></div>
       <div class="guess-vs-label">VS</div>
-      <div class="guess-player">${p2 ? avatarHTML(p2) : ''}<div class="guess-pname">${match.j2}</div></div>
+      <div class="guess-player">${p2 ? avatarHTML(p2) : ''}<div class="guess-pname">${match.j2}${fpFlag(match.j2)}</div></div>
     </div>
     <div class="guess-opts" data-q="winner">
-      <button class="guess-opt" data-val="${match.j1}">${match.j1}</button>
-      <button class="guess-opt" data-val="${match.j2}">${match.j2}</button>
+      <button class="guess-opt" data-val="${match.j1}">${match.j1}${fpFlag(match.j1)}</button>
+      <button class="guess-opt" data-val="${match.j2}">${match.j2}${fpFlag(match.j2)}</button>
     </div>
   `);
   wireOptions('winner', (val) => {
@@ -130,9 +130,9 @@ function renderScoreQuestion(played) {
     <div class="guess-sub">${match.tournamentName} · ${match.round}</div>
     <div class="guess-q-label" style="text-align:center; margin:18px 0 14px;">What was the final score?</div>
     <div class="guess-vs">
-      <div class="guess-player">${p1 ? avatarHTML(p1) : ''}<div class="guess-pname">${match.j1}</div></div>
+      <div class="guess-player">${p1 ? avatarHTML(p1) : ''}<div class="guess-pname">${match.j1}${fpFlag(match.j1)}</div></div>
       <div class="guess-vs-label">VS</div>
-      <div class="guess-player">${p2 ? avatarHTML(p2) : ''}<div class="guess-pname">${match.j2}</div></div>
+      <div class="guess-player">${p2 ? avatarHTML(p2) : ''}<div class="guess-pname">${match.j2}${fpFlag(match.j2)}</div></div>
     </div>
     <div class="guess-opts" data-q="score">
       <button class="guess-opt" data-val="3-0">3-0</button>
@@ -159,8 +159,8 @@ function renderEloQuestion() {
   renderShell(`
     <div class="guess-q-label" style="text-align:center; margin:18px 0 14px;">Who has the higher Elo rating?</div>
     <div class="guess-opts" data-q="elo">
-      <button class="guess-opt" data-val="${a.pseudo}">${a.pseudo} ${a.country ? countryFlag(a.country) : ''}</button>
-      <button class="guess-opt" data-val="${b.pseudo}">${b.pseudo} ${b.country ? countryFlag(b.country) : ''}</button>
+      <button class="guess-opt" data-val="${a.pseudo}">${a.pseudo} ${a.country ? countryFlag(a.country) : ''}${fpFlag(a)}</button>
+      <button class="guess-opt" data-val="${b.pseudo}">${b.pseudo} ${b.country ? countryFlag(b.country) : ''}${fpFlag(b)}</button>
     </div>
   `);
   wireOptions('elo', (val) => {
@@ -196,7 +196,7 @@ function renderCountryQuestion() {
   renderShell(`
     <div class="guess-q-label" style="text-align:center; margin:18px 0 14px;">Which country is <b>${player.pseudo}</b> from?</div>
     <div class="guess-vs" style="margin-bottom:20px;">
-      <div class="guess-player">${avatarHTML(player)}<div class="guess-pname">${player.pseudo}</div></div>
+      <div class="guess-player">${avatarHTML(player)}<div class="guess-pname">${player.pseudo}${fpFlag(player)}</div></div>
     </div>
     <div class="guess-opts" data-q="country">
       ${options.map(c => `<button class="guess-opt" data-val="${c}">${countryFlag(c)} ${SITE_DATA.countryInfo[c].name}</button>`).join('')}

@@ -81,7 +81,7 @@ if (!p) {
   headerEl.innerHTML = `
     ${avatarHTML(p)}
     <div>
-      <h1>${p.pseudo} ${p.country ? countryFlag(p.country) : ''}</h1>
+      <h1>${p.pseudo} ${p.country ? countryFlag(p.country) : ''} ${fpFlag(p)}</h1>
       <div class="sub">
         <span>Rank #${p.rank}</span>
         <span class="elo-val">${p.currentElo} Elo</span>
@@ -97,6 +97,9 @@ if (!p) {
 
   initPlayerCardButton(document.getElementById('card-actions'), p);
   document.getElementById('p-badges').innerHTML = badgeHTML(p.badges);
+  if (p.fairPlayFlag) {
+    document.getElementById('p-badges').innerHTML += `<div class="badge-row"><span class="badge fair-play">\u{1F6AB} Fair Play violation</span></div><p class="muted" style="font-size:13px; margin-top:10px;">${p.fairPlayNote || 'This player was found to have violated fair play rules during a tournament.'}</p>`;
+  }
   if (p.linkedAccount) {
     document.getElementById('p-badges').innerHTML += `<p class="muted" style="font-size:13px; margin-top:10px;">\u26A0\uFE0F Known secondary account of <a href="player.html?pseudo=${encodeURIComponent(p.linkedAccount)}" style="color:var(--bio-teal);">${p.linkedAccount}</a> — both entries are kept separate since they competed independently in the same edition.</p>`;
   }

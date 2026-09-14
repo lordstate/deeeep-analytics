@@ -97,7 +97,7 @@ function render(list) {
       <td>
         <a href="player.html?pseudo=${encodeURIComponent(p.pseudo)}" class="player-cell">
           ${avatarHTML(p)}
-          <span>${p.pseudo} ${p.country ? countryFlag(p.country) : ''} ${p.currentStreak >= 2 ? '<span title="' + p.currentStreak + '-match win streak">\u{1F525}</span>' : ''}</span>
+          <span>${p.pseudo} ${p.country ? countryFlag(p.country) : ''} ${fpFlag(p)} ${p.currentStreak >= 2 ? '<span title="' + p.currentStreak + '-match win streak">\u{1F525}</span>' : ''}</span>
         </a>
       </td>
       <td class="elo-val">${p.currentElo}</td>

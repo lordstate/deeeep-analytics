@@ -329,6 +329,8 @@ table.classement tbody tr:hover { background: rgba(53,227,196,0.04); }
   color: var(--bio-teal); background: rgba(53,227,196,0.06);
 }
 .badge.gold { border-color: #FFD166; color: #FFD166; background: rgba(255,209,102,0.08); }
+.badge.fair-play { border-color: var(--danger); color: var(--danger); background: rgba(255,107,107,0.1); }
+.fp-flag { font-size: 0.85em; filter: grayscale(0); }
 
 /* ===== Mini bracket path ===== */
 .path-row { display: flex; align-items: center; gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--border); }
@@ -359,7 +361,8 @@ table.classement tbody tr:hover { background: rgba(53,227,196,0.04); }
   padding: 6px 10px; font-size: 12px; box-sizing: border-box; transition: border-color .15s ease;
 }
 .bracket-match-abs .brow { display: flex; justify-content: space-between; padding: 3px 0; align-items: center; gap: 6px; }
-.bracket-match-abs .brow a { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: inherit; text-decoration: none; }
+.bracket-match-abs .brow > span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bracket-match-abs .brow a { color: inherit; text-decoration: none; }
 .bracket-match-abs .brow a:hover { text-decoration: underline; color: var(--bio-teal); }
 .bracket-match-abs .brow.win { color: var(--bio-teal); font-weight: 600; }
 .bracket-match-abs .brow.dim { color: var(--text-faint); }

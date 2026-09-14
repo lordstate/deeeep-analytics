@@ -153,12 +153,12 @@ function renderCompare() {
 
   document.getElementById('compare-grid').innerHTML = `
     <div class="compare-box">
-      <div class="name"><a href="player.html?pseudo=${encodeURIComponent(a.pseudo)}">${a.pseudo}</a></div>
+      <div class="name"><a href="player.html?pseudo=${encodeURIComponent(a.pseudo)}">${a.pseudo}</a>${fpFlag(a)}</div>
       ${rows.map(r => r[0]).join('')}
       ${badgeHTML(a.badges)}
     </div>
     <div class="compare-box">
-      <div class="name"><a href="player.html?pseudo=${encodeURIComponent(b.pseudo)}">${b.pseudo}</a></div>
+      <div class="name"><a href="player.html?pseudo=${encodeURIComponent(b.pseudo)}">${b.pseudo}</a>${fpFlag(b)}</div>
       ${rows.map(r => r[1]).join('')}
       ${badgeHTML(b.badges)}
     </div>
@@ -173,8 +173,8 @@ function renderCompare() {
       <div class="history-list">
         ${h2h.map(m => `
           <div class="match-card">
-            <div class="row ${m.winner === a.pseudo ? 'winner' : ''}"><span class="name">${a.pseudo}</span><span class="score">${m.j1 === a.pseudo ? m.score.split('-')[0] : m.score.split('-')[1]}</span></div>
-            <div class="row ${m.winner === b.pseudo ? 'winner' : ''}"><span class="name">${b.pseudo}</span><span class="score">${m.j1 === b.pseudo ? m.score.split('-')[0] : m.score.split('-')[1]}</span></div>
+            <div class="row ${m.winner === a.pseudo ? 'winner' : ''}"><span class="name">${a.pseudo}${fpFlag(a)}</span><span class="score">${m.j1 === a.pseudo ? m.score.split('-')[0] : m.score.split('-')[1]}</span></div>
+            <div class="row ${m.winner === b.pseudo ? 'winner' : ''}"><span class="name">${b.pseudo}${fpFlag(b)}</span><span class="score">${m.j1 === b.pseudo ? m.score.split('-')[0] : m.score.split('-')[1]}</span></div>
             <div class="row" style="padding-top:0;"><span class="muted" style="font-size:12px;">${m.tournament} · ${m.round}</span></div>
           </div>
         `).join('')}

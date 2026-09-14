@@ -18,6 +18,13 @@ function initials(name) {
   return (name || '?').slice(0, 2).toUpperCase();
 }
 
+// ===== Fair Play flag (visible everywhere a flagged player's name appears, like chess.com) =====
+function fpFlag(pseudoOrPlayer) {
+  const p = typeof pseudoOrPlayer === 'string' ? playerBySlug(pseudoOrPlayer) : pseudoOrPlayer;
+  if (!p || !p.fairPlayFlag) return '';
+  return ` <span class="fp-flag" title="Fair Play violation — see profile for details">\u{1F6AB}</span>`;
+}
+
 function avatarHTML(player) {
   if (player.avatar) {
     return `<span class="avatar"><img src="${player.avatar}" alt=""></span>`;
@@ -309,8 +316,8 @@ function renderBracketTree(container, rounds) {
       cardsHTML += `
         <div class="bracket-match-abs ${m.isUpset ? 'is-upset-b' : ''}" data-players="${m.j1}|${m.j2}"
              style="left:${x}px; top:${top}px; width:${CARD_W}px; height:${CARD_H}px;">
-          <div class="brow ${m.winner === m.j1 ? 'win' : 'dim'}"><a href="player.html?pseudo=${encodeURIComponent(m.j1)}">${m.j1}</a><span>${m.s1}</span></div>
-          <div class="brow ${m.winner === m.j2 ? 'win' : 'dim'}"><a href="player.html?pseudo=${encodeURIComponent(m.j2)}">${m.j2}</a><span>${m.s2}</span></div>
+          <div class="brow ${m.winner === m.j1 ? 'win' : 'dim'}"><span><a href="player.html?pseudo=${encodeURIComponent(m.j1)}">${m.j1}</a>${fpFlag(m.j1)}</span><span>${m.s1}</span></div>
+          <div class="brow ${m.winner === m.j2 ? 'win' : 'dim'}"><span><a href="player.html?pseudo=${encodeURIComponent(m.j2)}">${m.j2}</a>${fpFlag(m.j2)}</span><span>${m.s2}</span></div>
         </div>`;
 
       // find nearest match in the NEXT round by y (its true parent, robust to byes)

@@ -98,7 +98,7 @@ if (!t) {
         <div class="match-card ${m.isUpset ? 'is-upset' : ''}" data-players="${m.j1}|${m.j2}">
           ${m.isUpset ? '<div class="upset-tag">⚡ Upset</div>' : ''}
           <div class="row ${j1win ? 'winner' : ''}">
-            <span class="name"><a href="player.html?pseudo=${encodeURIComponent(m.j1)}">${m.j1}</a></span>
+            <span class="name"><a href="player.html?pseudo=${encodeURIComponent(m.j1)}">${m.j1}</a>${fpFlag(m.j1)}</span>
             <span class="score">${m.s1}</span>
           </div>
           <div class="row" style="padding-top:0;">
@@ -107,7 +107,7 @@ if (!t) {
           </div>
           <hr>
           <div class="row ${!j1win ? 'winner' : ''}">
-            <span class="name"><a href="player.html?pseudo=${encodeURIComponent(m.j2)}">${m.j2}</a></span>
+            <span class="name"><a href="player.html?pseudo=${encodeURIComponent(m.j2)}">${m.j2}</a>${fpFlag(m.j2)}</span>
             <span class="score">${m.s2}</span>
           </div>
           <div class="row" style="padding-top:0;">

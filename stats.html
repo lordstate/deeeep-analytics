@@ -116,7 +116,7 @@ document.getElementById('totals').innerHTML = `
   <div class="stat-box"><div class="label">Tournaments run</div><div class="value">${gs.totalTournaments}</div><div class="sub">2023 → 2026</div></div>
 `;
 
-const upsetLink = (n) => `<a href="player.html?pseudo=${encodeURIComponent(n)}"><b>${n}</b></a>`;
+const upsetLink = (n) => `<a href="player.html?pseudo=${encodeURIComponent(n)}"><b>${n}</b></a>${fpFlag(n)}`;
 
 document.getElementById('facts').innerHTML = `
   <div class="fact-card">
